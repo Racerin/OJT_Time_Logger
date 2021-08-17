@@ -1,0 +1,6 @@
+
+TESTING = False
+DEBUG = False
+
+# Login
+REMEMBER_COOKIE_DURATION = 6
