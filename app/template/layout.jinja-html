@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <title>{% block title %} OJT Timer Login {% endblock %}</title>
+        <!-- Place other things for head in here -->
+        {% block js %}{% endblock %}
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        {% include "header.html" ignore missing %}
+        {% block body %}
+        <p>By default, there should have nothing to see here.</p>
+        {% endblock %}
+        {% include "footer.html" ignore missing %}
+    </body>

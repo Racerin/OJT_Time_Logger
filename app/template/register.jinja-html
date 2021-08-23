@@ -1,0 +1,16 @@
+{% extends "layout.jinja-html" %}
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<form action="{{ url_for('auth.register') }}">
+    <label for="name"></label><br>
+    <input type="text" id="name"><br><br>
+    <label for="email"></label><br>
+    <input type="email" id="email"><br><br>
+    <label for="pw1"></label><br>
+    <input type="password" id="pw1"><br><br>
+    <label for="pw2"></label><br>
+    <input type="password" id="pw2"><br><br>
+    <input type="submit">
+</form>
+{% endblock %}

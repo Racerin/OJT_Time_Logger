@@ -1,0 +1,6 @@
+venv
+/instance
+
+#Noise
+*.pyc
+*__pycache__

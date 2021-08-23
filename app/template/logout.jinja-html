@@ -1,0 +1,6 @@
+{% extends "layout.jinja-html" %}
+{% block title %}Logout{% endblock %}
+
+{% block body %}
+<p>What more can I say. You logged out.</p>
+{% endblock %}
