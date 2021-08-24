@@ -25,7 +25,6 @@ bp = flask.Blueprint('user', __name__, url_prefix="/user")
 
 
 class UserLoginForm(flask_wtf.FlaskForm):
-# class UserLoginForm(flask_wtf.FlaskForm):
     username_email = wtforms.StringField(
         label='Username/E-mail:', 
         validators=[
@@ -43,20 +42,41 @@ class UserLoginForm(flask_wtf.FlaskForm):
     )
 
 
-class UserRegisterForm(UserLoginForm):
-    password2 = wtforms.PasswordField(
-        label='password2',
+class UserRegisterForm(flask_wtf.FlaskForm):
+    username = wtforms.StringField(
+        label="Username: ",
         validators=[
             wtforms.validators.DataRequired(),
-            wtforms.validators.EqualTo('password', message="Passwords must match.")
+        ]
+    )
+    password1 = wtforms.PasswordField(
+        label='Enter Password: ',
+        validators=[
+            wtforms.validators.DataRequired(),
+            # wtforms.validators.EqualTo('password', message="Passwords must match.")
+        ]
+    )
+    password2 = wtforms.PasswordField(
+        label='Enter Password Again:',
+        validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.EqualTo('password1', message="Passwords must match.")
         ]
     )
     email = wtforms.StringField(
-        label='email',
+        label='E-mail: ',
         validators=[
             # wtforms.validators.Email()
         ]
     )
+
+
+class UserSettingsForm(flask_wtf.FlaskForm):
+    new_username = wtforms.StringField()
+    current_email = wtforms.StringField()
+    new_email = wtforms.StringField()
+    current_password1 = wtforms.PasswordField()
+    current_password2 = wtforms.PasswordField()
 
 
 @login_manager.user_loader
@@ -112,11 +132,21 @@ def login():
     return flask.render_template(PARAM.HTML.LOGIN, form=form)
 
 
-@bp.route("/logout")
+@bp.route("/logout", methods=['POST'])
 def logout():
     # flask.session.clear()
     flask_login.logout_user()
     return flask.redirect( flask.url_for('home') )
+
+
+@bp.route("/settings", methods=["POST", "GET"])
+def settings():
+    form = UserSettingsForm()
+    if flask.request.method == "POST":
+        #Save the user Settings
+        flask.redirect( flask.url_for('home') )
+    #Return users settings page
+    return flask.render_template(PARAM.HTML.SETTINGS, form=form)
 
 
 @bp.route("/<string:name>")
