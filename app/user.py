@@ -152,3 +152,8 @@ def settings():
 @bp.route("/<string:name>")
 def message(name):
     return flask.render_template(PARAM.HTML.MESSAGE, title=name)
+
+
+def init_app(app):
+    """Instantiate packages/modules with app of instance."""
+    login_manager.init_app(app)
