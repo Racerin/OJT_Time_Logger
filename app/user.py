@@ -15,7 +15,7 @@ import wtforms
 import library
 import PARAM
 from . import db
-import model
+from . import model
 
 
 login_manager = flask_login.LoginManager()
