@@ -24,7 +24,7 @@ login_manager = flask_login.LoginManager()
 bp = flask.Blueprint('user', __name__, url_prefix="/user")
 
 
-class UserLoginForm(flask_wtf.Form):
+class UserLoginForm(flask_wtf.FlaskForm):
 # class UserLoginForm(flask_wtf.FlaskForm):
     username_email = wtforms.StringField(
         label='Username/E-mail:', 
