@@ -1,15 +1,20 @@
+"""Flask app package.
+Web application for OJT Trainee Time Logging.
+"""
+
+
+__author__ = "Darnell Baird"
+__version__ = "0.1"
+__all__ = ["create_app", ]
+
+
 import toml
 import os
 
 import flask
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_redis import FlaskRedis
-import flask_login
 
-# from Library import Database
-from . import PARAM
+import PARAM
 from . import db
-import user
 
 
 def create_app(test_config=False):
@@ -24,18 +29,19 @@ def create_app(test_config=False):
         app.logger.warning("Instance config could not be found.")
 
     #Views
-    @app.route('/')
-    def home():
-        return "All my exes live in Texas."
+    # from . import views
+    import app.views as temp_views
+    temp_views.init_app(app)
 
     #Initialize Plugins
     #Add database
     db.init_app(app)
     
     #Apply blueprints to the app
-    #User authentication
-    from . import auth
-    app.register_blueprint(auth.bp)
+    #flask-login and auth
+    from . import user
+    app.register_blueprint(user.bp)
+    user.login_manager.init_app(app)
     
     return app
 
