@@ -106,8 +106,5 @@ def init_app(app):
     """
     with app.app_context():
         init_db()
-    print("DEFAULT PASSWORDS xxxxxxxxxxxxxxx")
-    print(library.salt_password('Bass Durag Cheese Bed M#torcycle'))
-    print(library.salt_password('Egg Dinosaur Wa(l Experience Keyboard'))
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
