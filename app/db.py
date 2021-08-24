@@ -10,39 +10,15 @@ __author__ = "Darnell Baird"
 
 import sqlite3
 import click
-import hashlib
 
 import flask
 
 import PARAM
 import library
-import config
 
 
 # db_filename = "::memory::"
 schema_file = "static/schema.sql"
-
-
-#PASSWORD CONTROL
-pw_salt = getattr(config, "SALT", "").encode("utf-8")
-
-
-def salt_password(password) -> bytes:
-    """Salts password using pbkdf2_hmac."""
-    # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
-    key = hashlib.pbkdf2_hmac(
-        hash_name='sha256', 
-        password=password.encode('utf-8'), 
-        salt=pw_salt, 
-        iterations=int(1e6)
-        )
-    return key
-
-
-def is_password(password : str, salted : bytes):
-    """Compare a new password to the salted value"""
-    salted_password = salt_password(password)
-    return salted_password == salted
 
 
 #USER CONTROL
@@ -102,11 +78,18 @@ def close_db(e=None):
 
 
 def init_db():
-    """Clear existing data and create new tables."""
+    """Clear existing data, create new tables, and add admin and dumby user."""
     db = get_db()
 
     with flask.current_app.open_resource(schema_file) as f:
         db.executescript(f.read().decode("utf8"))
+    #Add users
+    users = [
+        ('admin', b'\xda1Y[D\xa3Yg"\x0f\xd3\x1b\x83\xd7R\xe80o\xb2\xeeu;7\xe3\xd6\xfd%\x0b4~x\x92', 'drsbaird@yahoo.com', 1),
+        ('FooBar', b'\x86\x98\xc8/=\x121\xd0\xf5E\xf0\x1b\xba\x17\xec\xe5\x0eG\xd3\x11\xc5O\xef\xf7\xbe\xd3\xa5\x80\x10\x85\xe6^', 'example@example.com', 0),
+    ]
+    sql = "INSERT INTO Users (username, salt_password, email, is_admin) VALUES(?,?,?,?);"
+    db.executemany(sql, users)
 
 
 @click.command("init-db")
@@ -123,8 +106,8 @@ def init_app(app):
     """
     with app.app_context():
         init_db()
-    # print("DEFAULT PASSWORDS xxxxxxxxxxxxxxx")
-    # print(salt_password('Bass Durag Cheese Bed M#torcycle'))
-    # print(salt_password('Egg Dinosaur Wa(l Experience Keyboard'))
+    print("DEFAULT PASSWORDS xxxxxxxxxxxxxxx")
+    print(library.salt_password('Bass Durag Cheese Bed M#torcycle'))
+    print(library.salt_password('Egg Dinosaur Wa(l Experience Keyboard'))
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)

@@ -8,6 +8,10 @@ __all__ = ["check_email"]
 
 
 import re
+import hashlib
+
+import config
+import library
 
 
 #https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/
@@ -16,3 +20,25 @@ email_patt = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 def check_email(email):
     return re.fullmatch(email_patt, email)
+
+
+#PASSWORD CONTROL
+pw_salt = getattr(library.config, "SALT", "").encode("utf-8")
+
+
+def salt_password(password) -> bytes:
+    """Salts password using pbkdf2_hmac."""
+    # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
+    key = hashlib.pbkdf2_hmac(
+        hash_name='sha256', 
+        password=password.encode('utf-8'), 
+        salt=pw_salt, 
+        iterations=int(1e6)
+        )
+    return key
+
+
+def is_password(password : str, salted : bytes):
+    """Compare a new password to the salted value"""
+    salted_password = salt_password(password)
+    return salted_password == salted

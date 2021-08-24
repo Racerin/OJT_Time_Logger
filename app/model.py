@@ -7,9 +7,11 @@ __version__ = "0.1"
 __all__ = ["User"]
 
 
-import dataclass
+import dataclasses
 
 import flask_login
+
+import library
 
 
 @dataclasses.dataclass
@@ -38,7 +40,7 @@ class User(flask_login.AnonymousUserMixin):
         """Password is never stored in object. Password is salted.
         """
         # Set salted password.
-        self.salt_password = db.salt_password(password)
+        self.salt_password = library.salt_password(password)
 
     @property
     def user_id(self):
@@ -52,7 +54,7 @@ class User(flask_login.AnonymousUserMixin):
         #assure password is salted
         try:
             if self.password:
-                self.salt_password = db.salt_password(self.password)
+                self.salt_password = library.salt_password(self.password)
         except:
             print("I told you so.")
 
