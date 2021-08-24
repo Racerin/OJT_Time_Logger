@@ -18,8 +18,14 @@ import library
 email_patt = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
-def check_email(email):
-    return re.fullmatch(email_patt, email)
+def check_email(email) -> bool:
+    """Determines if string is an email.
+    """
+    match = re.fullmatch(email_patt, email)
+    if match:
+        if match.group(0) == email:
+            return True
+    return False
 
 
 #PASSWORD CONTROL
