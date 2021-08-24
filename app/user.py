@@ -108,10 +108,11 @@ def login():
     if form.validate_on_submit():
         flask.flash("The form data is valid.", 'error')
         #Get user
-        if library.check_email(form.username_email.data):
-            row = db.get_user_from_email(form.username_email.data)
+        username_email = form.username_email.data
+        if library.is_email(username_email):
+            row = db.get_user_from_email(username_email)
         else:
-            row = db.get_user_from_username(form.username_email.data)
+            row = db.get_user_from_username(username_email)
         if row:
             flask.flash("We found the user in the database.", "debug")
             usr = model.User.from_row(row)
