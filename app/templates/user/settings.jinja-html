@@ -1,6 +1,6 @@
 {% extends "layout.jinja-html" %}
 {% block title %}User Settings{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for(static, filename=css/user.css) }}">{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">{% endblock %}
 
 {% block body %}
 <h1>User Settings</h1>
@@ -8,22 +8,28 @@
     {{ form.csrf_token }}
     <hr>
     <h3>Username</h3>
-    <p>Change username:</p>
-    {{ form.new_username }}
+    <div id='tab'>
+        <p>Change username:</p>
+        {{ form.new_username }}
+    </div>
     <hr>
     <h3>E-mail:</h3>
     <p>To change e-mail</p>
-    <p id="tab">Enter current e-mail:</p>
-    {{ form.current_email }}<br>
-    <p id="tab">Enter new e-mail:</p>
-    {{ form.new_email }}
+    <div id='tab'>
+        <p>Enter current e-mail:</p>
+        {{ form.current_email }}<br>
+        <p>Enter new e-mail:</p>
+        {{ form.new_email }}
+    </div>
     <hr>
     <h3>Password:</h3>
     <p>To change password:</p>
-    <p id="tab">Enter password:</p>
-    {{ form.current_password1 }}
-    <p id="tab">Enter password again:</p>
-    {{ form.current_password2 }}
+    <div id='tab'>
+        <p>Enter password:</p>
+        {{ form.current_password1 }}
+        <p>Enter password again:</p>
+        {{ form.current_password2 }}
+    </div>
     <br>
     <input type="submit">
 </form>
