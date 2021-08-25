@@ -29,15 +29,17 @@ def __get_user(key, field_int) -> sqlite3.Row:
     """Get sqlite row of user information 
     based on selected field and key of the field.
     """
+    user_field = user_unique_fields[field_int]
     sql = """
     SELECT user_id, username, salt_password, email FROM Users WHERE {}=?;
-    """.format(user_unique_fields)
+    """.format(user_field)
     db = get_db()
     try:
         rows = db.execute(sql, (key,))
         for row in rows:
             return row
     except sqlite3.ProgrammingError:
+        flask.flask("There was an error in retrieving the user.")
         return None
 
 
