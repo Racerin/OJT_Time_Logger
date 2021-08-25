@@ -43,11 +43,6 @@ def __get_user(key, field_int) -> sqlite3.Row:
         return None
 
 
-def get_user(user_id : int) -> sqlite3.Row:
-    """Get sqlite row of user information with user_id."""
-    return __get_user(user_id, 0)
-
-
 def get_user_from_email(email : str) -> sqlite3.Row:
     """Get sqlite row of user information from email or email."""
     return __get_user(email, 2)
@@ -92,6 +87,7 @@ def init_db():
     ]
     sql = "INSERT INTO Users (username, salt_password, email, is_admin) VALUES(?,?,?,?);"
     db.executemany(sql, users)
+    db.commit()
 
 
 @click.command("init-db")
@@ -106,7 +102,5 @@ def init_app(app):
     """Register database functions with the Flask app. This is called by
     the application factory.
     """
-    with app.app_context():
-        init_db()
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
