@@ -80,17 +80,23 @@ class UserSettingsForm(flask_wtf.FlaskForm):
 
 
 @login_manager.user_loader
-def load_user(user_id) -> 'model.User':
+def load_user(email) -> 'model.User':
     """Required callback function for linking a unique user_id
     to a user in the database.
     """
     #Get user row in database
-    row = db.get_user(user_id)
+    row = db.get_user_from_email(email)
     #Create user from row
     return model.User.from_row(row)
 
 # @login_manager.request_loadeer
 # def load_user_from_request(request):
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    """View returned if user failed ot log in."""
+    flask.flash("Invalid User login.")
+    return flask.render_template("Failed Login")
 
 
 @bp.route("/register", methods=['GET', 'POST'])
@@ -106,7 +112,7 @@ def register():
 def login():
     form = UserLoginForm()
     if form.validate_on_submit():
-        flask.flash("The form data is valid.", 'error')
+        flask.flash("The form data is valid.", 'debug')
         #Get user
         username_email = form.username_email.data
         if library.is_email(username_email):
@@ -116,6 +122,7 @@ def login():
         if row:
             flask.flash("We found the user in the database.", "debug")
             usr = model.User.from_row(row)
+            flask.flash("This is user: {}".format(usr))
             #Setup 'Remember me'
             #Try to login the user
             if flask_login.login_user(usr):
@@ -124,11 +131,13 @@ def login():
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
-                    Maybe problem within flask_login",
+                    Maybe problem within flask_login.",
                      "error")
                 return flask.redirect("/user/unsuccessful")
         else:
             flask.flash("We couldn't find the user in the database.", "error")
+    else:
+        flask.flash("The form data is invalid.", 'debug')
     #Just return the login page
     return flask.render_template(PARAM.HTML.LOGIN, form=form)
 
@@ -152,6 +161,7 @@ def settings():
 
 @bp.route("/<string:name>")
 def message(name):
+    """Generic template to return webpage with flash messages."""
     return flask.render_template(PARAM.HTML.MESSAGE, title=name)
 
 

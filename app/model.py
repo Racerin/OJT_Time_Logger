@@ -15,57 +15,45 @@ import library
 
 
 @dataclasses.dataclass
-# class User(flask_login.UserMixin):
-class User(flask_login.AnonymousUserMixin):
+class User(flask_login.UserMixin):
+# class User(flask_login.AnonymousUserMixin):
     username : str = ""
-    password : str = ""   # Never stored.
-    salt_password : bytes = b""
+    password : str = dataclasses.field(default="", repr=False)   # Never stored.
+    # salt_password : bytes = b""
+    salt_password : bytes = dataclasses.field(default=b'', repr=False)
     email : str = ""
 
-    # Required properties for 'flask-login'.  # https://flask-login.readthedocs.io/en/latest/#your-user-class
-    # is_authenticated = False
-    # is_active = False
-    # is_anonymous = True
-    # @property.getter
-    # def get_id(self) -> bytes:
-    #     return str(self.username).encode()
-
-    # Password Management
     @property
-    def password(self):
-        raise ValueError("Cannot access user password.")
-
-    @password.setter
-    def password(self, password):
-        """Password is never stored in object. Password is salted.
-        """
-        # Set salted password.
-        self.salt_password = library.salt_password(password)
-
-    @property
-    def user_id(self):
+    def id(self):
         return self.email
 
-    @user_id.setter
-    def user_id(self, val):
-        pass
+    @id.setter
+    def id(self, val):
+        self.email = val
 
     def __post_init__(self):
         #assure password is salted
-        try:
-            if self.password:
-                self.salt_password = library.salt_password(self.password)
-        except:
-            print("I told you so.")
+        if self.password and isinstance(self.password, str):
+            self.salt_password = library.salt_password(self.password)
+        #Assign password property
+        self.password = property(
+            # lambda: raise ValueError("Cannot access user password."),
+            lambda: None,
+            lambda pw: setattr(self, "salt_password", library.salt_password(pw)),
+            lambda: delattr(self, 'salt_password'),
+            )
 
 
     @classmethod
     def from_row(cls, row) -> 'User':
         """Creates a user from a database row object."""
-        usr = User(
-            username=row['username'],
-            salt_password=row['salt_password'],
-            email=row['email'],
-            )
+        try:
+            usr = User(
+                username=row['username'],
+                salt_password=row['salt_password'],
+                email=row['email'],
+                )
+        except TypeError:
+            return None
         return usr
 
