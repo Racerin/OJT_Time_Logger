@@ -1,0 +1,15 @@
+{% with messages = get_flashed_messages(
+with_categories=true, category_filter=["", "info", "error"]) %}
+{% if messages %}
+<p>Message:</p>
+<ul>
+    {% for cat, msg in messages %}
+    {% if cat %}
+    <li>{{ cat|title+': '+msg }}</li>
+    {% else %}
+    <li>{{ msg }}</li>
+    {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
