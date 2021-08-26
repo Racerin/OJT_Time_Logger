@@ -97,7 +97,8 @@ def load_user(email) -> 'model.User':
 def unauthorized_handler():
     """View returned if user failed ot log in."""
     flask.flash("Invalid User login.")
-    return flask.render_template("Failed Login")
+    return flask.render_template(PARAM.HTML.UNAUTH)
+    # return flask.redirect(PARAM.HTML.UNAUTH)
 
 
 @bp.route("/register", methods=['GET', 'POST'])
@@ -153,12 +154,14 @@ def success():
 
 
 @bp.route("/logout", methods=['POST'])
+@flask_login.login_required
 def logout():
     flask_login.logout_user()
     return flask.redirect( flask.url_for('home') )
 
 
 @bp.route("/settings", methods=["POST", "GET"])
+@flask_login.login_required
 def settings():
     form = UserSettingsForm()
     if flask.request.method == "POST":

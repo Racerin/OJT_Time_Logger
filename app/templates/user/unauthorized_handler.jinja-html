@@ -1,0 +1,7 @@
+{% extends 'layout.jinja-html' %}
+{% block title %}Redirect{% endblock title %}
+
+{% block body %}
+<h2>Unauthorized Webpage</h2>
+<p>You are not logged in. Please sign-in to access this page.</p>
+{% endblock body%}

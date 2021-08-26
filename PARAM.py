@@ -6,6 +6,7 @@ class HTML:
     SUCCESS = "user/success.jinja-html"
     LOGOUT = "/user/logout.jinja-html"
     SETTINGS = "user/settings.jinja-html"
+    UNAUTH = "user/unauthorized_handler.jinja-html"
     MESSAGE = "user/message.jinja-html"
 
 class CONFIG:
