@@ -9,6 +9,8 @@
     {{ form.username_email }}<br><br>
     {{ form.password.label }}<br>
     {{ form.password }}<br><br>
+    {{ form.remember_me.label }}<br>
+    {{ form.remember_me }}<br><br>
     <input type="submit" value="Submit">
 </form>
 {% endblock %}

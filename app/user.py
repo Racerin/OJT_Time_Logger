@@ -115,7 +115,7 @@ def login():
     form = UserLoginForm()
     if form.validate_on_submit():
         flask.flash("The form data is valid.", 'debug')
-        #Get user
+        #Get user id
         username_email = form.username_email.data
         if library.is_email(username_email):
             row = db.get_user_from_email(username_email)
@@ -127,7 +127,7 @@ def login():
             flask.flash("This is user: {}".format(usr))
             #Setup 'Remember me'
             #Try to login the user
-            if flask_login.login_user(usr):
+            if flask_login.login_user(usr, remember=form.remember_me.data):
                 flask.flash("You have sucessfuly logged in.", 'info')
                 # return flask.redirect( '/user/success' )
                 # return flask.redirect( flask.url_for('user.success') )
