@@ -13,4 +13,13 @@
     {{ form.remember_me }}<br><br>
     <input type="submit" value="Submit">
 </form>
+{% with messages = get_flashed_messages(category_filter=['login']) %}
+{% if messages %}
+<ul>
+    {% for msg in messages %}
+    <li>{{msg}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 {% endblock %}

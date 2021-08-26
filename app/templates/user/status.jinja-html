@@ -1,0 +1,11 @@
+{% extends 'layout.jinja-html' %}
+{% block title %}Status{% endblock title %}
+
+{% block body %}
+<!-- User -->
+{% if current_user.is_authenticated %}
+<h2>User:</h2>
+{{ current_user.__repr__() }}
+{% endif %}
+
+{% endblock body %}
