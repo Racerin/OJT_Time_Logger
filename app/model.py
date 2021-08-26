@@ -22,6 +22,7 @@ class User(flask_login.UserMixin):
     # salt_password : bytes = b""
     salt_password : bytes = dataclasses.field(default=b'', repr=False)
     email : str = ""
+    is_active : bool = True
 
     @property
     def id(self):

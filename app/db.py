@@ -31,7 +31,7 @@ def __get_user(key, field_int) -> sqlite3.Row:
     """
     user_field = user_unique_fields[field_int]
     sql = """
-    SELECT user_id, username, salt_password, email FROM Users WHERE {}=?;
+    SELECT user_id, username, salt_password, email FROM Users WHERE {}=? AND is_active=1;
     """.format(user_field)
     db = get_db()
     try:
@@ -91,7 +91,8 @@ def init_db():
             username TEXT UNIQUE NOT NULL,
             salt_password BLOB NOT NULL,
             email TEXT UNIQUE,
-            is_admin INTEGER DEFAULT 0
+            is_admin INTEGER DEFAULT 0,
+            is_active INTEGER DEFAULT 1
             ); """, 
 
         """CREATE TABLE Clock (
