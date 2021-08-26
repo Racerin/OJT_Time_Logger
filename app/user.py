@@ -81,8 +81,9 @@ class UserSettingsForm(flask_wtf.FlaskForm):
 
 @login_manager.user_loader
 def load_user(email) -> 'model.User':
-    """Required callback function for linking a unique user_id
-    to a user in the database.
+    """This callback is used to reload the user object
+     from the user ID stored in the session.
+    https://flask-login.readthedocs.io/en/latest/#how-it-works
     """
     #Get user row in database
     row = db.get_user_from_email(email)
@@ -127,7 +128,9 @@ def login():
             #Try to login the user
             if flask_login.login_user(usr):
                 flask.flash("You have sucessfuly logged in.", 'info')
-                return flask.redirect('/user/success')
+                # return flask.redirect('/user/success')
+                return flask.redirect( flask.url_for('user.success') )
+                # return flask.redirect( '/user/success' )
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
@@ -142,9 +145,15 @@ def login():
     return flask.render_template(PARAM.HTML.LOGIN, form=form)
 
 
+@bp.route("/success")
+# @flask_login.login_required
+def success():
+    """Display to user that they are logged in."""
+    return flask.render_template( PARAM.HTML.SUCCESS )
+
+
 @bp.route("/logout", methods=['POST'])
 def logout():
-    # flask.session.clear()
     flask_login.logout_user()
     return flask.redirect( flask.url_for('home') )
 

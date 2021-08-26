@@ -1,0 +1,7 @@
+{% extends 'layout.jinja-html' %}
+{% block title %}Success!!{% endblock title %}
+
+{% block body %}
+<h2>Success</h2>
+{#<p>You are logged in as {{session['user'].username}}.</p> #}
+{% endblock body %}
