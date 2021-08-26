@@ -78,8 +78,32 @@ def init_db():
     """Clear existing data, create new tables, and add admin and dumby user."""
     db = get_db()
 
-    with flask.current_app.open_resource(schema_file) as f:
-        db.executescript(f.read().decode("utf8"))
+    #Create Tables
+    sqls = [
+        "DROP TABLE IF EXISTS Users",
+
+        "DROP TABLE IF EXISTS Clock",
+
+        "PRAGMA foreign_keys = ON;",
+
+        """CREATE TABLE Users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            salt_password BLOB NOT NULL,
+            email TEXT UNIQUE,
+            is_admin INTEGER DEFAULT 0
+            ); """, 
+
+        """CREATE TABLE Clock (
+            user_id,
+            clock_in TEXT NOT NULL,
+            clock_out TEXT,
+            comment TEXT,
+            FOREIGN KEY(user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+            );""",
+    ]
+    for sql in sqls:
+        db.execute(sql)
     #Add users
     users = [
         ('admin', b'\xda1Y[D\xa3Yg"\x0f\xd3\x1b\x83\xd7R\xe80o\xb2\xeeu;7\xe3\xd6\xfd%\x0b4~x\x92', 'drsbaird@yahoo.com', 1),
