@@ -22,15 +22,11 @@ class User(flask_login.UserMixin):
     # salt_password : bytes = b""
     salt_password : bytes = dataclasses.field(default=b'', repr=False)
     email : str = ""
+    # https://flask-login.readthedocs.io/en/latest/#your-user-class
     is_active : bool = True
 
-    @property
-    def id(self):
+    def get_id(self):
         return self.email
-
-    @id.setter
-    def id(self, val):
-        self.email = val
 
     def __post_init__(self):
         #assure password is salted

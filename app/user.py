@@ -128,9 +128,9 @@ def login():
             #Try to login the user
             if flask_login.login_user(usr):
                 flask.flash("You have sucessfuly logged in.", 'info')
-                # return flask.redirect('/user/success')
-                return flask.redirect( flask.url_for('user.success') )
                 # return flask.redirect( '/user/success' )
+                # return flask.redirect( flask.url_for('user.success') )
+                return flask.render_template(PARAM.HTML.SUCCESS)
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
@@ -146,7 +146,7 @@ def login():
 
 
 @bp.route("/success")
-# @flask_login.login_required
+@flask_login.login_required
 def success():
     """Display to user that they are logged in."""
     return flask.render_template( PARAM.HTML.SUCCESS )
