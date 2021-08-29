@@ -22,6 +22,7 @@ def create_app(test_config=False):
     app = flask.Flask(__name__, instance_relative_config=True)
 
     #Configurations
+    app.testing = test_config
     app.config.from_object('config')
     #load 'instance' folder config. Do NOT include 'instance in production code. 
     app.config.from_envvar('FLASK_SECRET_KEY', silent=True)
