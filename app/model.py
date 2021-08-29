@@ -16,12 +16,12 @@ import library
 
 @dataclasses.dataclass
 class User(flask_login.UserMixin):
-# class User(flask_login.AnonymousUserMixin):
     username : str = ""
     password : str = dataclasses.field(default="", repr=False)   # Never stored.
     # salt_password : bytes = b""
     salt_password : bytes = dataclasses.field(default=b'', repr=False)
     email : str = ""
+    is_admin : bool = False
     # https://flask-login.readthedocs.io/en/latest/#your-user-class
     is_active : bool = True
 
@@ -40,7 +40,6 @@ class User(flask_login.UserMixin):
             lambda: delattr(self, 'salt_password'),
             )
 
-
     @classmethod
     def from_row(cls, row) -> 'User':
         """Creates a user from a database row object."""
@@ -54,3 +53,14 @@ class User(flask_login.UserMixin):
             return None
         return usr
 
+    def __eq__(self, other):
+        """Compare none property attributes."""
+        for k,v in vars(self).items():
+            if callable(v) or isinstance(v, property): continue
+            try:
+                if v != getattr(other, k):
+                    print("This is the wrong attribute:", k, v)
+                    return False
+            except ValueError:
+                return False
+        return True or super(User).__eq__(other)

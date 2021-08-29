@@ -53,6 +53,17 @@ def get_user_from_username(username : str) -> sqlite3.Row:
     return __get_user(username, 2)
 
 
+def set_user(user):
+    """Submits user to the database."""
+    db = get_db()
+    sql2 = """INSERT INTO Users (
+        username, salt_password, email, is_admin, is_active
+        )VALUES(:username,:salt_password,:email,:is_admin,:is_active);"""
+    values = vars(user)
+    db.execute(sql2, values)
+    db.commit()
+
+
 def get_db():
     """Connect to the application's configured database. The connection
     is unique for each request and will be reused if this is called
