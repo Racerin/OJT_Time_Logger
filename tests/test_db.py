@@ -25,7 +25,7 @@ class TestGetDB(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         #Restore original database
-        # del cls.temp_db_handler
+        del cls.temp_db_handler     #must be explicit
         pass
     
     def test_get_db(self):
