@@ -26,6 +26,12 @@ class TempDatabaseHandler():
             # shutil.copy(self.db_filename, self.temp_db_filename)
             os.system(f'cp {self.db_filename} {self.temp_db_filename}')
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def close(self):
         """Restore original database."""
         if os.path.exists(self.temp_db_filename):
