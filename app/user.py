@@ -19,6 +19,7 @@ from . import model
 
 
 login_manager = flask_login.LoginManager()
+login_manager.refresh_view = "user.reauthenticate"
 
 
 bp = flask.Blueprint('user', __name__, url_prefix="/user")
@@ -90,8 +91,6 @@ def load_user(email) -> 'model.User':
     #Create user from row
     return model.User.from_row(row)
 
-# @login_manager.request_loadeer
-# def load_user_from_request(request):
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
@@ -99,6 +98,16 @@ def unauthorized_handler():
     flask.flash("Invalid User login.")
     return flask.render_template(PARAM.HTML.UNAUTH)
     # return flask.redirect(PARAM.HTML.UNAUTH)
+
+
+@bp.route("/reauthenticate")
+def reauthenticate():
+    """If a user is still logged in with their cookies 
+    but closed the website (stale),
+    the user is redirected to this view if re-login is required.
+    https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager.refresh_view"""
+    flask.flash("Please sign-in again.", "login")
+    flask.redirect( flask.url_for("/user/login") )
 
 
 @bp.route("/register", methods=['GET', 'POST'])
@@ -124,10 +133,9 @@ def login():
         if row:
             flask.flash("We found the user in the database.", "debug")
             usr = model.User.from_row(row)
-            flask.flash("This is user: {}".format(usr))
-            #Setup 'Remember me'
             #Try to login the user
-            if flask_login.login_user(usr, remember=form.remember_me.data):
+            # if flask_login.login_user(usr, remember=form.remember_me.data):
+            if flask_login.login_user(usr, remember=True):
                 flask.flash("You have sucessfuly logged in.", 'info')
                 # return flask.redirect( '/user/success' )
                 # return flask.redirect( flask.url_for('user.success') )
@@ -162,6 +170,7 @@ def logout():
 
 @bp.route("/settings", methods=["POST", "GET"])
 @flask_login.login_required
+@login_manager.needs_refresh_handler
 def settings():
     form = UserSettingsForm()
     if flask.request.method == "POST":
@@ -169,6 +178,11 @@ def settings():
         flask.redirect( flask.url_for('home') )
     #Return users settings page
     return flask.render_template(PARAM.HTML.SETTINGS, form=form)
+
+
+@bp.route("/status")
+def status():
+    return flask.render_template( PARAM.HTML.STATUS )
 
 
 @bp.route("/<string:name>")
