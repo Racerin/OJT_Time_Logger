@@ -6,30 +6,27 @@ import tempfile
 import sqlite3
 
 import flask
-
 import app as App
 import app.model as app_model
 import app.db as db
+
+from . import TempDatabaseHandler
 
 
 class TestGetDB(unittest.TestCase):
     
     orig_db_filename = 'database.db'
-    temp_db_filename = ""
 
     @classmethod
     def setUpClass(cls):
         #Copy and save original database away
-        if os.path.exists(cls.orig_db_filename):
-            _, cls.temp_db_filename = tempfile.mkstemp(suffix='.db')
-            shutil.copy(cls.orig_db_filename, cls.temp_db_filename)
+        cls.temp_db_handler = TempDatabaseHandler(cls.orig_db_filename)
 
     @classmethod
     def tearDownClass(cls):
         #Restore original database
-        if os.path.exists(cls.temp_db_filename):
-            shutil.copy(cls.temp_db_filename, cls.orig_db_filename)
-            # temp db file should be deleted automatically
+        # del cls.temp_db_handler
+        pass
     
     def test_get_db(self):
         #Initiate App
