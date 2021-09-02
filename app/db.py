@@ -31,7 +31,7 @@ def __get_user(key, field_int) -> sqlite3.Row:
     """
     user_field = user_unique_fields[field_int]
     sql = """
-    SELECT user_id, username, salt_password, email FROM Users WHERE {}=? AND is_active=1;
+    SELECT user_id, username, salt_password, email, is_admin FROM Users WHERE {}=? AND is_active=1;
     """.format(user_field)
     db = get_db()
     try:
@@ -39,13 +39,13 @@ def __get_user(key, field_int) -> sqlite3.Row:
         for row in rows:
             return row
     except sqlite3.ProgrammingError:
-        flask.flask("There was an error in retrieving the user.")
+        flask.flask(f"There was an error in retrieving the user via '{user_field}'.")
         return None
 
 
 def get_user_from_email(email : str) -> sqlite3.Row:
     """Get sqlite row of user information from email or email."""
-    return __get_user(email, 2)
+    return __get_user(email, 1)
 
 
 def get_user_from_username(username : str) -> sqlite3.Row:

@@ -123,6 +123,7 @@ def register():
 def login():
     form = UserLoginForm()
     if form.validate_on_submit():
+        # print("Form information:", form.data)
         flask.flash("The form data is valid.", 'debug')
         #Get user id
         username_email = form.username_email.data
@@ -134,12 +135,12 @@ def login():
             flask.flash("We found the user in the database.", "debug")
             usr = model.User.from_row(row)
             #Try to login the user
-            # if flask_login.login_user(usr, remember=form.remember_me.data):
-            if flask_login.login_user(usr, remember=True):
+            if flask_login.login_user(usr, remember=form.remember_me.data):
+            # if flask_login.login_user(usr, remember=True):
                 flask.flash("You have sucessfuly logged in.", 'info')
-                # return flask.redirect( '/user/success' )
                 # return flask.redirect( flask.url_for('user.success') )
-                return flask.render_template(PARAM.HTML.SUCCESS)
+                return flask.redirect( '/user/success' )
+                # return flask.render_template(PARAM.HTML.SUCCESS)
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
@@ -148,9 +149,25 @@ def login():
                 return flask.redirect("/user/unsuccessful")
         else:
             flask.flash("We couldn't find the user in the database.", "error")
+            return flask.redirect("/user/unsuccessful")
     else:
         flask.flash("The form data is invalid.", 'debug')
     #Just return the login page
+    return flask.render_template(PARAM.HTML.LOGIN, form=form)
+
+
+# @bp.route("/login", methods=["POST", "GET"])
+def login1():
+    form = UserLoginForm()
+    if form.validate_on_submit():
+        print("In here.")
+        row = db.get_user_from_email("drsbaird@yahoo.com")
+        assert row is not None, "No row"
+        usr = model.User.from_row(row)
+        if flask_login.login_user(usr, remember=True):
+            return flask.redirect( '/user/success' )
+        else:
+            return flask.redirect("/user/unsuccessful")
     return flask.render_template(PARAM.HTML.LOGIN, form=form)
 
 

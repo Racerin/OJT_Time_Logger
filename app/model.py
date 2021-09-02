@@ -41,7 +41,7 @@ class User(flask_login.UserMixin):
             )
 
     @classmethod
-    def from_row(cls, row) -> 'User':
+    def from_row1(cls, row) -> 'User':
         """Creates a user from a database row object."""
         try:
             usr = User(
@@ -51,6 +51,17 @@ class User(flask_login.UserMixin):
                 )
         except TypeError:
             return None
+        return usr
+
+    @classmethod
+    def from_row(cls, row) -> 'User':
+        """Creates a user from a database row object."""
+        usr = User(
+            username=row['username'],
+            salt_password=row['salt_password'],
+            email=row['email'],
+            is_admin=bool(row['is_admin'])
+            )
         return usr
 
     def __eq__(self, other):
