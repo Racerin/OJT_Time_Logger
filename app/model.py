@@ -1,4 +1,7 @@
 """Script containing other classes used in app.
+I think it suppose to have SQLAlchemy in here. 
+https://medium.com/analytics-vidhya/how-to-test-flask-applications-aef12ae5181c
+
 """
 
 
