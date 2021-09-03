@@ -201,6 +201,18 @@ def settings():
 def status():
     return flask.render_template( PARAM.HTML.STATUS )
 
+@bp.route("/execute", methods=['POST', 'GET'])
+def execute():
+    """Pass a text input to execute any script
+    NB: THIS PAGE IS EXTREMELY DANGEROUS.
+    """
+    if flask.request.method == "POST":
+        str1 = flask.request.form['line']
+        if str1:
+            flask.flash(str1, "last_input")
+        exec(str1)
+    return flask.render_template( PARAM.HTML.EXECUTE )
+
 
 @bp.route("/<string:name>")
 def message(name):

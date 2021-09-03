@@ -8,6 +8,7 @@ class HTML:
     SETTINGS = "user/settings.jinja-html"
     UNAUTH = "user/unauthorized_handler.jinja-html"
     STATUS = "user/status.jinja-html"
+    EXECUTE = "user/execute.jinja-html"
     MESSAGE = "user/message.jinja-html"
 
 class CONFIG:

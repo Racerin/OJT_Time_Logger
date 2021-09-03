@@ -1,0 +1,25 @@
+{% extends "layout.jinja-html" %}
+{% block title %}Python Terminal:{% endblock title %}
+
+{% block body %}
+<!-- Warning message -->
+<pre style="color:crimson">
+N.B: Please be careful what you execute in the following textbox.
+There is no protection on the programming level.
+</pre>
+<!-- Form for execute input -->
+<form method='POST' action="{{url_for('user.execute')}}">
+    <label for='line'>Text:</label>
+    <input type="text" name='line'>
+    <input type='submit'>
+</form>
+<!-- Flash Message -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <h2>Messages</h2>
+        {% for cat, msg in messages %}
+            <p>{{ cat.upper() }}: {{ msg }}</p>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock body %}
