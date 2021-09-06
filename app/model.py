@@ -44,16 +44,14 @@ class User(flask_login.UserMixin):
             )
 
     @classmethod
-    def from_row1(cls, row) -> 'User':
-        """Creates a user from a database row object."""
-        try:
-            usr = User(
-                username=row['username'],
-                salt_password=row['salt_password'],
-                email=row['email'],
-                )
-        except TypeError:
-            return None
+    def from_register_form(cls, form) -> 'User':
+        """Create user from UserRegistrationForm"""
+        data = form.data
+        usr = User(
+            username=data['username'],
+            password=data['password1'],
+            email=data['email'],
+            )
         return usr
 
     @classmethod

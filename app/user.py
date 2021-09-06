@@ -41,11 +41,15 @@ class UserLoginForm(flask_wtf.FlaskForm):
         ]
     )
     remember_me = wtforms.BooleanField(
-        label="Remember Me:",
+        label="Keep me logged in:",
     )
 
 
 class UserRegisterForm(flask_wtf.FlaskForm):
+
+    class FieldError(AssertionError):
+        pass
+
     username = wtforms.StringField(
         label="Username: ",
         validators=[
@@ -72,6 +76,24 @@ class UserRegisterForm(flask_wtf.FlaskForm):
             # wtforms.validators.Email()
         ]
     )
+    recaptcha = flask_wtf.RecaptchaField()
+
+    def no_errors(self, raise_field_error=False) -> bool:
+        validated = self.validate()
+        if validated:
+            return True
+        if raise_field_error:
+            for error in self.errors:
+                raise UserRegisterForm.FieldError(f"This is the FieldError: {error}")
+        return False
+
+    def is_email(self) -> bool:
+        """Simple regex check of email string."""
+        return library.is_email(self.email.data)
+
+    def passwords_equal(self) -> bool:
+        return self.password1.data == self.password2.data
+
 
 
 class UserSettingsForm(flask_wtf.FlaskForm):
@@ -114,10 +136,34 @@ def reauthenticate():
 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
-    if flask.request.method == "POST":
-        #Try to signup new user
-        return "meh"
-    #Just return the register page
+    """User Register webpage view and client handling."""
+    form = UserRegisterForm()
+    if form.validate_on_submit():
+        #Signup new user
+        #NB. Don't trust submitted data. Still test it.
+        if not form.is_email():
+            flask.flash("Invalid e-mail.", "form error")
+            return flask.redirect( "user.register" )
+        if not form.passwords_equal():
+            flask.flash("Passwords are not equal.", "form error")
+            return flask.render_template( "user.register")
+        try:
+            if form.no_errors(raise_field_error=True):
+                flask.flash(
+                    "There is an error with one of the submitted fields.", 
+                    "form error"
+                    )
+                return flask.render_template( "user.register" )
+        except UserRegisterForm.FieldError as err:
+            flask.flash(f"{err}", "form error")
+            return flask.render_template( "user.register" )
+        #Insert into database
+        usr = model.User.from_register_form(form)
+        db.set_user(usr)
+        #Success
+        flask.flash("User should be registered.", 'success')
+        statement = "Welcome user. Check your e-mail to activate your account."
+        return flask.redirect("user.success", statement=statement)
     return "Register the user here."
 
 
@@ -204,5 +250,6 @@ def message(name):
 
 def init_app(app):
     """Instantiate packages/modules with app of instance."""
+    app.config["RECAPTCHA_PUBLIC_KEY"] = "-w0g968n-9eru0nb-0-098n-8"
     login_manager.init_app(app)
     pass
