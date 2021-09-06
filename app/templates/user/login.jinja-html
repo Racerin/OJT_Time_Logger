@@ -2,7 +2,7 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-<h2>Login</h2>
+<h2 class='subtitle'>Login</h2>
 {% if current_user %}
     {% if current_user.is_authenticated %}
         <p style="color:red">
