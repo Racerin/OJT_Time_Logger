@@ -12,6 +12,7 @@
     {% else %}
         <form method="POST" action="">
             {{ form.csrf_token }}
+            <!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> -->
             {{ form.username_email.label }}<br>
             {{ form.username_email }}<br><br>
             {{ form.password.label }}<br>
