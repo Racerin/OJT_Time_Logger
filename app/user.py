@@ -20,6 +20,7 @@ from . import model
 
 login_manager = flask_login.LoginManager()
 login_manager.refresh_view = "user.reauthenticate"
+login_manager.login_view = "user.login"
 
 
 bp = flask.Blueprint('user', __name__, url_prefix="/user")
@@ -81,13 +82,13 @@ class UserSettingsForm(flask_wtf.FlaskForm):
 
 
 @login_manager.user_loader
-def load_user(email) -> 'model.User':
+def load_user(username_email) -> 'model.User':
     """This callback is used to reload the user object
      from the user ID stored in the session.
     https://flask-login.readthedocs.io/en/latest/#how-it-works
     """
     #Get user row in database
-    row = db.get_user_from_email(email)
+    row = db.get_user_from_username_email(username_email)
     #Create user from row
     return model.User.from_row(row)
 
@@ -127,16 +128,13 @@ def login():
         flask.flash("The form data is valid.", 'debug')
         #Get user id
         username_email = form.username_email.data
-        if library.is_email(username_email):
-            row = db.get_user_from_email(username_email)
-        else:
-            row = db.get_user_from_username(username_email)
+        password = form.password.data
+        remember_me = form.remember_me.data
+        row = db.login(username_email, password)
         if row:
-            flask.flash("We found the user in the database.", "debug")
+            flask.flash("Valid user login.", "debug")
             usr = model.User.from_row(row)
-            #Try to login the user
-            if flask_login.login_user(usr, remember=form.remember_me.data):
-            # if flask_login.login_user(usr, remember=True):
+            if flask_login.login_user(usr, remember=remember_me):
                 flask.flash("You have sucessfuly logged in.", 'info')
                 # return flask.redirect( flask.url_for('user.success') )
                 return flask.redirect( '/user/success' )
@@ -152,22 +150,6 @@ def login():
             return flask.redirect("/user/unsuccessful")
     else:
         flask.flash("The form data is invalid.", 'debug')
-    #Just return the login page
-    return flask.render_template(PARAM.HTML.LOGIN, form=form)
-
-
-# @bp.route("/login", methods=["POST", "GET"])
-def login1():
-    form = UserLoginForm()
-    if form.validate_on_submit():
-        print("In here.")
-        row = db.get_user_from_email("drsbaird@yahoo.com")
-        assert row is not None, "No row"
-        usr = model.User.from_row(row)
-        if flask_login.login_user(usr, remember=True):
-            return flask.redirect( '/user/success' )
-        else:
-            return flask.redirect("/user/unsuccessful")
     return flask.render_template(PARAM.HTML.LOGIN, form=form)
 
 
@@ -223,3 +205,4 @@ def message(name):
 def init_app(app):
     """Instantiate packages/modules with app of instance."""
     login_manager.init_app(app)
+    pass

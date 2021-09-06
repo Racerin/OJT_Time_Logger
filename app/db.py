@@ -53,6 +53,24 @@ def get_user_from_username(username : str) -> sqlite3.Row:
     return __get_user(username, 2)
 
 
+def get_user_from_username_email(username_email : str) -> sqlite3.Row:
+    """Get sqlite row of user information from email, else username"""
+    row = get_user_from_email(username_email)
+    if row is None:
+        row = get_user_from_username(username_email)
+    return row
+
+
+def login(username_email : str, password : str) -> sqlite3.Row:
+    """Returns valid user if username and password matches, else no user information.
+    """
+    row = get_user_from_username_email(username_email)
+    if row:
+        if library.is_password(password, row['salt_password']):
+            return row
+    return None
+
+
 def set_user(user):
     """Submits user to the database."""
     db = get_db()
