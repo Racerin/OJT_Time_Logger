@@ -124,6 +124,7 @@ def register():
 @bp.route("/login", methods=["POST", "GET"])
 def login():
     form = UserLoginForm()
+    # if form.validate_on_submit():
     if form.validate_on_submit():
         # print("Form information:", form.data)
         flask.flash("The form data is valid.", 'debug')
@@ -136,19 +137,17 @@ def login():
             flask.flash("Valid user login.", "debug")
             usr = model.User.from_row(row)
             if flask_login.login_user(usr, remember=remember_me):
-                flask.flash("You have sucessfuly logged in.", 'info')
-                # return flask.redirect( flask.url_for('user.success') )
-                return flask.redirect( '/user/success' )
-                # return flask.render_template(PARAM.HTML.SUCCESS)
+                flask.flash("You have successfuly logged in.", 'info')
+                return flask.redirect('/')
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
                     Maybe problem within flask_login.",
                      "error")
-                return flask.redirect("/user/unsuccessful")
+                return flask.redirect("/user/login")
         else:
             flask.flash("We couldn't find the user in the database.", "error")
-            return flask.redirect("/user/unsuccessful")
+            return flask.redirect("/user/login")
     else:
         flask.flash("The form data is invalid.", 'debug')
     return flask.render_template(PARAM.HTML.LOGIN, form=form)

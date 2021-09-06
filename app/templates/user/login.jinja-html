@@ -3,16 +3,25 @@
 
 {% block body %}
 <h2>Login</h2>
-<form method="POST" action="{{ url_for('user.login') }}">
-    {{ form.csrf_token }}
-    {{ form.username_email.label }}<br>
-    {{ form.username_email }}<br><br>
-    {{ form.password.label }}<br>
-    {{ form.password }}<br><br>
-    {{ form.remember_me.label }}<br>
-    {{ form.remember_me }}<br><br>
-    <input type="submit" value="Submit">
-</form>
+{% if current_user %}
+    {% if current_user.is_authenticated %}
+        <p style="color:red">
+            A user is already logged in. <br>
+            Logout by clicking <a href='{{ url_for("user.logout") }}'>here</a>.
+        </p>
+    {% else %}
+        <form method="POST" action="">
+            {{ form.csrf_token }}
+            {{ form.username_email.label }}<br>
+            {{ form.username_email }}<br><br>
+            {{ form.password.label }}<br>
+            {{ form.password }}<br><br>
+            {{ form.remember_me.label }}<br>
+            {{ form.remember_me }}<br><br>
+            <input type="submit" value="Submit">
+        </form>
+    {% endif %}
+{% endif %}
 {% with messages = get_flashed_messages(category_filter=['login']) %}
 {% if messages %}
 <ul>
