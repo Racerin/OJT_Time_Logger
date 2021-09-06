@@ -21,6 +21,7 @@ from . import model
 login_manager = flask_login.LoginManager()
 login_manager.refresh_view = "user.reauthenticate"
 login_manager.login_view = "user.login"
+login_manager.login_message = "Please log in before proceeding."
 
 
 bp = flask.Blueprint('user', __name__, url_prefix="/user")
@@ -160,7 +161,7 @@ def success():
     return flask.render_template( PARAM.HTML.SUCCESS )
 
 
-@bp.route("/logout", methods=['POST'])
+@bp.route("/logout", methods=['GET', 'POST'])
 @flask_login.login_required
 def logout():
     flask_login.logout_user()

@@ -4,10 +4,15 @@
 {% block body %}
 <!-- User -->
 {% if current_user %}
-    {#% if current_user.is_authenticated %#}
-        <h2>User:</h2>
-        <p>{{ current_user }}</p>
-    {#% endif %#}
+    <h2>User:</h2>
+    <p>
+    {% if current_user.is_authenticated %}
+        User is authenticated.<br>
+    {% else %}
+        User is not authenticated
+    {% endif %}
+    {{ current_user }}
+    </p>
 {% endif %}
 <!-- Session -->
 {% if session %}
