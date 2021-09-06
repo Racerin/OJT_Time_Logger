@@ -3,5 +3,10 @@
 
 {% block body %}
 <h2>Success</h2>
+<p>
+    {% block statement %}
+    Hi.
+    {% endblock statement %}
+</p>
 {#<p>You are logged in as {{session['user'].username}}.</p> #}
 {% endblock body %}
