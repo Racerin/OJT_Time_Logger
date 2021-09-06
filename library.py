@@ -32,7 +32,7 @@ def is_email(email) -> bool:
 pw_salt = getattr(library.config, "SALT", "").encode("utf-8")
 
 
-def salt_password(password : bytes) -> bytes:
+def salt_password(password : str) -> bytes:
     """Salts password using pbkdf2_hmac."""
     # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
     key = hashlib.pbkdf2_hmac(
