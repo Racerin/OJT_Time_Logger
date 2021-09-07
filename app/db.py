@@ -17,8 +17,7 @@ import PARAM
 import library
 
 
-# db_filename = "::memory::"
-schema_file = "static/schema.sql"
+DATABASE_FILENAME = PARAM.DATABASE.FILENAME
 
 
 #USER CONTROL
@@ -97,7 +96,8 @@ def get_db():
     again.
     """
     if "db" not in flask.g:
-        flask.g.db = sqlite3.connect(PARAM.DATABASE.FILENAME)
+        # database_filename = flask.current_app.config["SQLITE_DATBASE_FILENAME"]
+        flask.g.db = sqlite3.connect(DATABASE_FILENAME)
         flask.g.db.row_factory = sqlite3.Row
     return flask.g.db
 
@@ -165,5 +165,6 @@ def init_app(app):
     """Register database functions with the Flask app. This is called by
     the application factory.
     """
+    app.config["SQLITE_DATBASE_FILENAME"] = DATABASE_FILENAME
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
