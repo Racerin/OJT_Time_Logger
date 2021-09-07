@@ -61,6 +61,15 @@ def get_user_from_username_email(username_email : str) -> sqlite3.Row:
     return row
 
 
+def email_exists(email : str) -> bool:
+    """Confirms whether email exists."""
+    sql = "SELECT email FROM Users email WHERE email==? LIMIT 1;"
+    db = get_db()
+    rows = db.execute(sql, (email,))
+    for row in rows:
+        return email == row['email']
+
+
 def login(username_email : str, password : str) -> sqlite3.Row:
     """Returns valid user if username and password matches, else no user information.
     """
