@@ -1,5 +1,4 @@
-{% with messages = get_flashed_messages(
-with_categories=true, category_filter=["", "info", "error"]) %}
+{% with messages = get_flashed_messages(with_categories=True) %}
 {% if messages %}
 <p>Message:</p>
 <ul>
