@@ -37,7 +37,7 @@
                                         Logout
                                     </a>
                                 {% else %}
-                                    <a href="{#{ url_for('user.signup') }#}" class="navbar-item">
+                                    <a href="{{ url_for('user.register') }}" class="navbar-item">
                                         Sign Up
                                     </a>
                                     <a href="{{ url_for('user.login') }}" class="navbar-item">

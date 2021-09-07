@@ -5,6 +5,9 @@ TESTING = False
 DEBUG = False
 SECRET_KEY = "Please change me to something more secret."
 
+RECAPTCHA_PUBLIC_KEY = "Get this from Google recaptcha"
+RECAPTCHA_PRIVATE_KEY = "I think your site must be public."
+
 
 # Login
 # REMEMBER_COOKIE_DURATION = 6

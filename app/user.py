@@ -47,12 +47,22 @@ class UserLoginForm(flask_wtf.FlaskForm):
 
 class UserRegisterForm(flask_wtf.FlaskForm):
 
-    class FieldError(AssertionError):
-        pass
-
     username = wtforms.StringField(
         label="Username: ",
         validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.Length(8, 60,message=
+                "Username must be between 8 and 60 characters long."
+                ),
+        ]
+    )
+    """ email = wtforms.fields.html5.Email(
+        label='E-mail: ',
+    ) """
+    email = wtforms.StringField(
+        label='E-mail: ',
+        validators=[
+            # wtforms.validators.Email(),
             wtforms.validators.DataRequired(),
         ]
     )
@@ -60,40 +70,51 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         label='Enter Password: ',
         validators=[
             wtforms.validators.DataRequired(),
-            # wtforms.validators.EqualTo('password', message="Passwords must match.")
+            wtforms.validators.Length(8, 60, message=
+                "Password must be between 8 and 60 characters long."
+                ),
         ]
     )
     password2 = wtforms.PasswordField(
-        label='Enter Password Again:',
+        label='Enter Password:',
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.EqualTo('password1', message="Passwords must match.")
         ]
     )
-    email = wtforms.StringField(
-        label='E-mail: ',
-        validators=[
-            # wtforms.validators.Email()
-        ]
-    )
     recaptcha = flask_wtf.RecaptchaField()
 
-    def no_errors(self, raise_field_error=False) -> bool:
-        validated = self.validate()
-        if validated:
-            return True
-        if raise_field_error:
-            for error in self.errors:
-                raise UserRegisterForm.FieldError(f"This is the FieldError: {error}")
-        return False
+    def validate_username(self, field : wtforms.fields.Field):
+        """A special method automatically called when
+        validating the 'usrname' field.
+        No whitespace in username.
+        """
+        if library.re.findall(r'/s', field.data):
+            raise wtforms.validators.ValidationError("Username cannot include any whitespace.")
 
-    def is_email(self) -> bool:
-        """Simple regex check of email string."""
-        return library.is_email(self.email.data)
+    def validate_email(self, field : wtforms.fields.Field):
+        """A special method automatically called when
+        validating the 'email' field.
+        Regex evaluation of email.
+        User/email exists.
+        """
+        if not library.is_email(field.data):
+            raise wtforms.validators.ValidationError("Please enter a valid e-mail address.")
+        if db.email_exists(field.data):
+            raise wtforms.validators.ValidationError("E-mail already in use.")
 
-    def passwords_equal(self) -> bool:
-        return self.password1.data == self.password2.data
-
+    def validate_password1(self, field : wtforms.Field):
+        """A special method automatically called when
+        validating the 'password1' field.
+        Password must contain numbers, characters, symbols.
+        """
+        wtforms.validators.ValidationError("I feeling bad mind.")
+        if not library.re.findall(r'/d', field.data):
+            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a digit.")
+        if not library.re.findall(r'/w', field.data):
+            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a character.")
+        if not library.re.findall(r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]', field.data):
+            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a punctuation.")
 
 
 class UserSettingsForm(flask_wtf.FlaskForm):
@@ -121,7 +142,6 @@ def unauthorized_handler():
     """View returned if user failed ot log in."""
     flask.flash("Invalid User login.")
     return flask.render_template(PARAM.HTML.UNAUTH)
-    # return flask.redirect(PARAM.HTML.UNAUTH)
 
 
 @bp.route("/reauthenticate")
@@ -131,48 +151,37 @@ def reauthenticate():
     the user is redirected to this view if re-login is required.
     https://flask-login.readthedocs.io/en/latest/#flask_login.LoginManager.refresh_view"""
     flask.flash("Please sign-in again.", "login")
-    flask.redirect( flask.url_for("/user/login") )
+    flask.redirect( "/user/login" )
 
 
 @bp.route("/register", methods=['GET', 'POST'])
 def register():
     """User Register webpage view and client handling."""
     form = UserRegisterForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and flask.request.method == "POST":
         #Signup new user
-        #NB. Don't trust submitted data. Still test it.
-        if not form.is_email():
-            flask.flash("Invalid e-mail.", "form error")
-            return flask.redirect( "user.register" )
-        if not form.passwords_equal():
-            flask.flash("Passwords are not equal.", "form error")
-            return flask.render_template( "user.register")
-        try:
-            if form.no_errors(raise_field_error=True):
-                flask.flash(
-                    "There is an error with one of the submitted fields.", 
-                    "form error"
-                    )
-                return flask.render_template( "user.register" )
-        except UserRegisterForm.FieldError as err:
-            flask.flash(f"{err}", "form error")
-            return flask.render_template( "user.register" )
-        #Insert into database
+        if db.email_exists(form.email.data):
+            flask.flash("User already exists.", "error")
+            return flask.redirect( "/user/register" )
         usr = model.User.from_register_form(form)
-        db.set_user(usr)
+        #Insert into database
+        db.insert_user(usr)
         #Success
-        flask.flash("User should be registered.", 'success')
-        statement = "Welcome user. Check your e-mail to activate your account."
-        return flask.redirect("user.success", statement=statement)
-    return "Register the user here."
+        flask.flash("User registered.", 'success')
+        return flask.redirect("/user/register_success")
+    return flask.render_template(PARAM.HTML.REGISTER, form=form)
+
+
+@bp.route("/register_success")
+def register_success():
+    statement = "Welcome user. Check your e-mail to activate your account."
+    return flask.render_template(PARAM.HTML.SUCCESS, statement=statement)
 
 
 @bp.route("/login", methods=["POST", "GET"])
 def login():
     form = UserLoginForm()
-    # if form.validate_on_submit():
-    if form.validate_on_submit():
-        # print("Form information:", form.data)
+    if form.validate_on_submit() and flask.request.method == "POST":
         flask.flash("The form data is valid.", 'debug')
         #Get user id
         username_email = form.username_email.data
@@ -184,7 +193,7 @@ def login():
             usr = model.User.from_row(row)
             if flask_login.login_user(usr, remember=remember_me):
                 flask.flash("You have successfuly logged in.", 'info')
-                return flask.redirect('/')
+                return flask.redirect( flask.url_for("home") )
             else:
                 flask.flash(
                     "There was an error in logging in the user. \

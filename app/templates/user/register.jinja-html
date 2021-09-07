@@ -3,16 +3,19 @@
 
 {% block body %}
 <form method="POST" action="">
-    {{ form.csrf_token }}
-    {{ form.username.label }}<br>
-    {{ form.username }}<br><br>
-    {{ form.email.label }}<br>
-    {{ form.email }}<br><br>
-    {{ form.password1.label }}<br>
-    {{ form.password1 }}<br><br>
-    {{ form.password2.label }}<br>
-    {{ form.password2 }}<br><br>
-    {{ form.recaptcha }}
+    {#{ form.csrf_token }#}
+    {% for field in form %}
+        {% if not field.type in ["RecaptchaField", "CSRFTokenField"] %}
+            {{ field.label }}<br>
+        {% endif %}
+        {{ field }}<br>
+        {% if field.errors %}
+            <small>{{ field.errors[0] }}</small>
+        {% endif %}<br>
+    {% endfor %}
     <input type="submit" value="Submit">
 </form>
+<p>
+    {% include "flask_msg_list.jinja-html" ignore missing %}
+</p>
 {% endblock %}
