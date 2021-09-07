@@ -80,7 +80,7 @@ def login(username_email : str, password : str) -> sqlite3.Row:
     return None
 
 
-def set_user(user : 'User'):
+def insert_user(user : 'User'):
     """Submits user to the database."""
     db = get_db()
     sql2 = """INSERT INTO Users (
