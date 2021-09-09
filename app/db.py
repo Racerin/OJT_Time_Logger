@@ -21,14 +21,14 @@ DATABASE_FILENAME = PARAM.DATABASE.FILENAME
 
 
 #USER CONTROL
-user_unique_fields = ['user_id', 'email', 'username']
+_user_unique_fields = ['user_id', 'email', 'username']
 
 
 def __get_user(key, field_int) -> sqlite3.Row:
     """Get sqlite row of user information 
     based on selected field and key of the field.
     """
-    user_field = user_unique_fields[field_int]
+    user_field = _user_unique_fields[field_int]
     sql = """
     SELECT user_id, username, salt_password, email, is_admin FROM Users WHERE {}=? AND is_active=1;
     """.format(user_field)
@@ -96,8 +96,8 @@ def get_db():
     again.
     """
     if "db" not in flask.g:
-        # database_filename = flask.current_app.config["SQLITE_DATBASE_FILENAME"]
-        flask.g.db = sqlite3.connect(DATABASE_FILENAME)
+        database_filename = flask.current_app.config["SQLITE_DATBASE_FILENAME"]
+        flask.g.db = sqlite3.connect(database_filename)
         flask.g.db.row_factory = sqlite3.Row
     return flask.g.db
 
@@ -146,11 +146,31 @@ def init_db():
     #Add users
     users = [
         ('admin', b'\xda1Y[D\xa3Yg"\x0f\xd3\x1b\x83\xd7R\xe80o\xb2\xeeu;7\xe3\xd6\xfd%\x0b4~x\x92', 'drsbaird@yahoo.com', 1),
-        ('FooBar', b'\x86\x98\xc8/=\x121\xd0\xf5E\xf0\x1b\xba\x17\xec\xe5\x0eG\xd3\x11\xc5O\xef\xf7\xbe\xd3\xa5\x80\x10\x85\xe6^', 'example@example.com', 0),
     ]
     sql = "INSERT INTO Users (username, salt_password, email, is_admin) VALUES(?,?,?,?);"
     db.executemany(sql, users)
     db.commit()
+
+
+def add_foobar_user():
+    """Add a test user."""
+    sql = "INSERT INTO Users (:username, :salt_password, :email, :is_admin) VALUES(?,?,?,?);"
+    db = get_db()
+    dict1 = {
+        'username':'FooBar',
+        'salt_password':b'\x86\x98\xc8/=\x121\xd0\xf5E\xf0\x1b\xba\x17\xec\xe5\x0eG\xd3\x11\xc5O\xef\xf7\xbe\xd3\xa5\x80\x10\x85\xe6^',
+        'email':'example@example.com',
+        'is_admin':0,
+        'is_active':1,
+        }
+    db.execute(sql, dict1)
+
+
+def clear_db():
+    sql = "DELETE FROM User WHERE is_admin=0;"
+    conn = get_db()
+    conn.execute(sql)
+    conn.commit()
 
 
 @click.command("init-db")
