@@ -32,14 +32,16 @@ def is_email(email) -> bool:
 pw_salt = getattr(library.config, "SALT", "").encode("utf-8")
 
 
-def salt_password(password : str) -> bytes:
+def salt_password(pw: 'str|bytes', iterations=int(1e6)) -> bytes:
     """Salts password using pbkdf2_hmac."""
+    assert len(pw) != 0, "Password must have a length."
     # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
+    b_password = pw if isinstance(pw, bytes) else pw.encode('utf-8')
     key = hashlib.pbkdf2_hmac(
         hash_name='sha256', 
-        password=password.encode('utf-8'), 
+        password=b_password, 
         salt=pw_salt, 
-        iterations=int(1e6)
+        iterations=iterations,
         )
     return key
 
@@ -48,3 +50,23 @@ def is_password(password : str, salted : bytes):
     """Compare a new password to the salted value"""
     salted_password = salt_password(password)
     return salted_password == salted
+
+
+def has_digit(str1 : str) -> bool:
+    """String contains a digit."""
+    return any(d.isdigit() for d in str1) and len(str1) > 0
+
+
+def has_letter(str1 : str) -> bool:
+    """String contains a letter."""
+    assert isinstance(str1, str), "Input must be a 'str'."
+    return any(s.isalpha() for s in str1) and len(str1) > 0
+
+
+def has_symbol(str1 : str) -> bool:
+    """String contains a symbol."""
+    # return any(not l.isdigit() and not l.isalpha() and l.isprintable() for l in str1)
+    return bool(re.search(
+        r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]',
+        str1,
+        ))
