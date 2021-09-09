@@ -54,17 +54,19 @@ def is_password(password : str, salted : bytes):
 
 def has_digit(str1 : str) -> bool:
     """String contains a digit."""
+    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
     return any(d.isdigit() for d in str1) and len(str1) > 0
 
 
 def has_letter(str1 : str) -> bool:
     """String contains a letter."""
-    assert isinstance(str1, str), "Input must be a 'str'."
+    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
     return any(s.isalpha() for s in str1) and len(str1) > 0
 
 
 def has_symbol(str1 : str) -> bool:
     """String contains a symbol."""
+    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
     # return any(not l.isdigit() and not l.isalpha() and l.isprintable() for l in str1)
     return bool(re.search(
         r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]',
