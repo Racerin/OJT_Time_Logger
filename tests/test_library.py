@@ -69,7 +69,7 @@ class TestLibrary(unittest.TestCase):
             None,
         ]
         for error_input in error_inputs:
-            with self.assertRaises((TypeError, AttributeError, AssertionError), msg=error_input):
+            with self.assertRaises((TypeError, AttributeError, ValueError), msg=error_input):
                 library.salt_password(error_input, iterations=2)
 
 
@@ -119,7 +119,7 @@ class TestLibrary(unittest.TestCase):
             None,
         ]
         for error_input in error_inputs:
-            with self.assertRaises((TypeError, AttributeError, AssertionError), msg=error_input):
+            with self.assertRaises((TypeError, AttributeError), msg=error_input):
                 library.has_digit(error_input)
 
 
@@ -156,7 +156,7 @@ class TestLibrary(unittest.TestCase):
             None,
         ]
         for error_input in error_inputs:
-            with self.assertRaises((TypeError, AttributeError, AssertionError, ), msg=error_input):
+            with self.assertRaises((TypeError, AttributeError, ), msg=error_input):
                 library.has_letter(error_input)
 
 
@@ -193,5 +193,5 @@ class TestLibrary(unittest.TestCase):
             None,
         ]
         for error_input in error_inputs:
-            with self.assertRaises((TypeError, AttributeError, AssertionError), msg=error_input):
+            with self.assertRaises((TypeError, AttributeError), msg=error_input):
                 library.has_symbol(error_input)

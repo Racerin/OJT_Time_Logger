@@ -34,7 +34,8 @@ pw_salt = getattr(library.config, "SALT", "").encode("utf-8")
 
 def salt_password(pw: 'str|bytes', iterations=int(1e6)) -> bytes:
     """Salts password using pbkdf2_hmac."""
-    assert len(pw) != 0, "Password must have a length."
+    if len(pw) == 0:
+        raise ValueError("Password must be longer than 0.")
     # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
     b_password = pw if isinstance(pw, bytes) else pw.encode('utf-8')
     key = hashlib.pbkdf2_hmac(
@@ -54,19 +55,22 @@ def is_password(password : str, salted : bytes):
 
 def has_digit(str1 : str) -> bool:
     """String contains a digit."""
-    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
+    if not isinstance(str1, str):
+        raise TypeError(f"Input '{str1}' must be of type 'str'.")
     return any(d.isdigit() for d in str1) and len(str1) > 0
 
 
 def has_letter(str1 : str) -> bool:
     """String contains a letter."""
-    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
+    if not isinstance(str1, str):
+        raise TypeError(f"Input '{str1}' must be of type 'str'.")
     return any(s.isalpha() for s in str1) and len(str1) > 0
 
 
 def has_symbol(str1 : str) -> bool:
     """String contains a symbol."""
-    assert isinstance(str1, str), f"Input '{str1}' must be of type 'str'."
+    if not isinstance(str1, str):
+        raise TypeError(f"Input '{str1}' must be of type 'str'.")
     # return any(not l.isdigit() and not l.isalpha() and l.isprintable() for l in str1)
     return bool(re.search(
         r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]',
