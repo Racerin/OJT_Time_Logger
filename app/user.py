@@ -47,12 +47,19 @@ class UserLoginForm(flask_wtf.FlaskForm):
 
 class UserRegisterForm(flask_wtf.FlaskForm):
 
+    _usrnm_range = (5,60)
+    _pw_range = (8,60)
+
     username = wtforms.StringField(
         label="Username: ",
         validators=[
             wtforms.validators.DataRequired(),
-            wtforms.validators.Length(8, 60,message=
-                "Username must be between 8 and 60 characters long."
+            wtforms.validators.Length(
+                min=_usrnm_range[0], 
+                max=_usrnm_range[1],
+                message=
+                "Username must be between {} and {} characters long."
+                    .format(*_usrnm_range)
                 ),
         ]
     )
@@ -70,8 +77,12 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         label='Enter Password: ',
         validators=[
             wtforms.validators.DataRequired(),
-            wtforms.validators.Length(8, 60, message=
-                "Password must be between 8 and 60 characters long."
+            wtforms.validators.Length(
+                min=_pw_range[0], 
+                max=_pw_range[1], 
+                message=
+                "Password must be between 8 and 60 characters long."\
+                    .format(*_pw_range)
                 ),
         ]
     )
@@ -79,7 +90,9 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         label='Enter Password:',
         validators=[
             wtforms.validators.DataRequired(),
-            wtforms.validators.EqualTo('password1', message="Passwords must match.")
+            wtforms.validators.EqualTo(
+                'password1', message="Passwords must match."
+                )
         ]
     )
     recaptcha = flask_wtf.RecaptchaField()
@@ -108,13 +121,16 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         validating the 'password1' field.
         Password must contain numbers, characters, symbols.
         """
-        wtforms.validators.ValidationError("I feeling bad mind.")
-        if not library.re.findall(r'/d', field.data):
-            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a digit.")
-        if not library.re.findall(r'/w', field.data):
-            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a character.")
-        if not library.re.findall(r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]', field.data):
-            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")#("Password requires a punctuation.")
+        bools = [f(field.data) for f in [library.has_digit, library.has_letter, library.has_symbol]]
+        if not all(bools):
+            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")
+        # if not library.has_digit(field.data):
+        #     raise wtforms.validators.ValidationError("Password requires a digit.")
+        # if not library.has_letter(field.data):
+        #     raise wtforms.validators.ValidationError("Password requires a character.")
+        # if not library.re.findall(r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]', field.data):
+        #     raise wtforms.validators.ValidationError("Password requires a punctuation.")
+
 
 
 class UserSettingsForm(flask_wtf.FlaskForm):
