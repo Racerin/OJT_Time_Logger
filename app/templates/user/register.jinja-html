@@ -15,7 +15,5 @@
     {% endfor %}
     <input type="submit" value="Submit">
 </form>
-<p>
-    {% include "flask_msg_list.jinja-html" ignore missing %}
-</p>
+<p id="flash messages">{% include "flask_msg_list.jinja-html" ignore missing %}</p>
 {% endblock %}
