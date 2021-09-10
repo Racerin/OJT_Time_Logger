@@ -76,3 +76,9 @@ def has_symbol(str1 : str) -> bool:
         r'[!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~]',
         str1,
         ))
+
+def has_whitespace(str1 : str) -> bool:
+    """String contains whitespace characters."""
+    if not isinstance(str1, str):
+        raise TypeError(f"Input '{str1}' must be of type 'str'.")
+    return bool(re.search(r'\s', str1, ))
