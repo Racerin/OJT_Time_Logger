@@ -47,7 +47,17 @@ class UserLoginForm(flask_wtf.FlaskForm):
 
 class UserRegisterForm(flask_wtf.FlaskForm):
 
-    _usrnm_range = (5,60)
+    _vldr_msgs = {
+        'em_used':"E-mail already in use.",
+        'plz_val_em':"Please enter a valid e-mail address.",
+        'unm_l_rg':"Username must be between {} and {} characters long.",
+        'pw_l_rg':"Password must be between {} and {} characters long.",
+        'pw_match':"Passwords must match.",
+        'unm_no_wht_spc':"Username cannot contain any whitespace.",
+        'pw_d_w_s':"Password requires atleast a number, letter and symbol.",
+    }
+
+    _usrnm_range = (2,60)
     _pw_range = (8,60)
 
     username = wtforms.StringField(
@@ -58,8 +68,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
                 min=_usrnm_range[0], 
                 max=_usrnm_range[1],
                 message=
-                "Username must be between {} and {} characters long."
-                    .format(*_usrnm_range)
+                _vldr_msgs["unm_l_rg"].format(*_usrnm_range)
                 ),
         ]
     )
@@ -80,9 +89,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
             wtforms.validators.Length(
                 min=_pw_range[0], 
                 max=_pw_range[1], 
-                message=
-                "Password must be between 8 and 60 characters long."\
-                    .format(*_pw_range)
+                message=_vldr_msgs['pw_l_rg'].format(*_pw_range)
                 ),
         ]
     )
@@ -91,7 +98,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.EqualTo(
-                'password1', message="Passwords must match."
+                'password1', message=_vldr_msgs['pw_match']
                 )
         ]
     )
@@ -102,8 +109,8 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         validating the 'usrname' field.
         No whitespace in username.
         """
-        if library.re.findall(r'/s', field.data):
-            raise wtforms.validators.ValidationError("Username cannot include any whitespace.")
+        if library.has_whitespace(field.data):
+            raise wtforms.validators.ValidationError(self._vldr_msgs['unm_no_wht_spc'])
 
     def validate_email(self, field : wtforms.fields.Field):
         """A special method automatically called when
@@ -112,9 +119,9 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         User/email exists.
         """
         if not library.is_email(field.data):
-            raise wtforms.validators.ValidationError("Please enter a valid e-mail address.")
-        if db.email_exists(field.data):
-            raise wtforms.validators.ValidationError("E-mail already in use.")
+            raise wtforms.validators.ValidationError(self._vldr_msgs["plz_val_em"])
+        if model.User.DB.email_exists(field.data):
+            raise wtforms.validators.ValidationError(self._vldr_msgs['em_used'])
 
     def validate_password1(self, field : wtforms.Field):
         """A special method automatically called when
@@ -123,7 +130,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         """
         bools = [f(field.data) for f in [library.has_digit, library.has_letter, library.has_symbol]]
         if not all(bools):
-            raise wtforms.validators.ValidationError("Password requires atleast a number, letter and symbol.")
+            raise wtforms.validators.ValidationError(self._vldr_msgs['pw_d_l_s'])
         # if not library.has_digit(field.data):
         #     raise wtforms.validators.ValidationError("Password requires a digit.")
         # if not library.has_letter(field.data):
@@ -148,7 +155,7 @@ def load_user(username_email) -> 'model.User':
     https://flask-login.readthedocs.io/en/latest/#how-it-works
     """
     #Get user row in database
-    row = db.get_user_from_username_email(username_email)
+    row = model.User.DB.get_user_from_username_email(username_email)
     #Create user from row
     return model.User.from_row(row)
 
@@ -176,12 +183,12 @@ def register():
     form = UserRegisterForm()
     if form.validate_on_submit() and flask.request.method == "POST":
         #Signup new user
-        if db.email_exists(form.email.data):
+        if model.User.DB.email_exists(form.email.data):
             flask.flash("User already exists.", "error")
             return flask.redirect( "/user/register" )
         usr = model.User.from_register_form(form)
         #Insert into database
-        db.insert_user(usr)
+        model.User.DB.insert_user(usr)
         #Success
         flask.flash("User registered.", 'success')
         return flask.redirect("/user/register_success")
@@ -277,4 +284,3 @@ def init_app(app):
     """Instantiate packages/modules with app of instance."""
     app.config["RECAPTCHA_PUBLIC_KEY"] = "-w0g968n-9eru0nb-0-098n-8"
     login_manager.init_app(app)
-    pass

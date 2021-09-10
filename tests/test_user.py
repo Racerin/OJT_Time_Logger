@@ -12,6 +12,8 @@ import app.user as app_user
 
 class TestPages(unittest.TestCase):
 
+    vldr_msgs = app_user.UserRegisterForm._vldr_msgs
+
     @classmethod
     def setUpClass(cls):
         cls.temp_db_handler = TempDatabaseHandler('database.db')
@@ -28,40 +30,85 @@ class TestPages(unittest.TestCase):
 
     def test_register(self):
         """Test user register page."""
-        #Set up
-        self.app.config["WTF_CSRF_ENABLED"] = False
+        # Set up
+        self.app.config["WTF_CSRF_ENABLED"] = False #Disable CSRF authentication
         client = self.app.test_client()
-        #1st time
+        # 1st time, Register page
         resp = client.get("user/register")
-        # print("Dir of resp.", dir(resp))
         html = resp.data.decode()
         self.assertEqual(resp.status_code, 200)
         self.assertIn("Register", html)
-        #Signup
-        with self.app.test_request_context() as request:
+        # Signup
+        with self.app.test_request_context():
             form = app_user.UserRegisterForm(data={
                 'username':'Kazoo',
                 'email':'kazoo@gmail.com',
                 'password1':'Password@1234!',
                 'password2':'Password@1234!',
             })
-            # print("This is form.data:", form.data)
             resp = client.post(
                 "user/register", 
                 data=form.data,
-                # data=dict(**form.data, login_form=""),
                 follow_redirects=True,
                 )
             html = resp.data.decode()
-            # print("This is form: ", dir(resp.request))
             self.assertEqual(resp.status_code, 200)
-            assert 'required' not in html, html
+            assert 'Register' not in html, html
             assert "Success" in html, html
-            #Signup fail
-            resp = client.post("user/register", form=form)
+            # 2nd Signup fail
+            resp = client.post(
+                "user/register", 
+                data=form.data,
+                follow_redirects=True,
+                )
             html = resp.data.decode()
-            self.assertEqual(resp.status_code, 300)
-            self.assertIn("exists", html.lower())
+            self.assertEqual(resp.status_code, 200)
+            assert form._vldr_msgs['em_used'] in html, html     #E-mail already in use.
+
+    def test_bad_register(self):
+        """Test the response due to bad registering of users.
+        Use 'test_register' for reference.
+        """
+        # Set up
+        self.app.config["WTF_CSRF_ENABLED"] = False #Disable CSRF authentication
+        client = self.app.test_client()
+        # Post a valid email
+        with self.app.test_request_context():
+            dict1 = dict(username="Ringo",email="ringo@example.com", password1="Ringo4L!fe", password2="Ringo4L!fe")
+            valid_form = app_user.UserRegisterForm(data=dict1)
+            client.post("user/register", data=valid_form.data, follow_redirects=True,)
+        # Input variables
+        datas = [
+            dict(username="", email="fb@eg.com", password="foobar!123", password2="foobar!123"),
+            dict(username='X', email="fb@eg.com", password1='foobar!123', password2='foobar!123'),
+            dict(username='FooBar', email="", password1='foobar!123', password2='foobar!123'),
+            dict(username='FooBar', email="fb@eg.com", password1='', password2='foobar!123'),
+            dict(username='FooBar', email="fb@eg.com", password1='fb!12', password2='fb!12'),
+            dict(username='FooBar', email="fb@eg.com", password1='foobar!12345', password2='foobar!123'),
+            dict(username='Foo Bar', email="fb@eg.com", password1='foobar!123', password2='foobar!123'),
+            dict(username='FooBar', email="foobar@example", password1='foobar!123', password2='foobar!123'),
+            dict1,
+        ]
+        checks = [
+            lambda h: self.assertIn('This field is required.', h),
+            lambda h: self.assertIn(self.vldr_msgs['unm_l_rg'][:20], h),
+            lambda h: self.assertIn('This field is required.', h),
+            lambda h: self.assertIn('This field is required.', h),
+            lambda h: self.assertIn(self.vldr_msgs['pw_l_rg'][:20], h),
+            lambda h: self.assertIn(self.vldr_msgs['pw_match'], h),
+            lambda h: self.assertIn(self.vldr_msgs['unm_no_wht_spc'], h),
+            lambda h: self.assertIn(self.vldr_msgs['plz_val_em'], h),
+            lambda h: self.assertIn(self.vldr_msgs['em_used'], h),
+        ]
+        # Tests
+        for data, check in zip(datas, checks):
+            with self.app.test_request_context():
+                form = app_user.UserRegisterForm(data=data)
+                resp = client.post("user/register", data=form.data, follow_redirects=True,)
+                html = resp.data.decode()
+                self.assertEqual(resp.status_code, 200)
+                assert "Success" not in html, data
+                check(html) #assertion
 
 
 class TestUser(unittest.TestCase):
