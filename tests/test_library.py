@@ -195,3 +195,40 @@ class TestLibrary(unittest.TestCase):
         for error_input in error_inputs:
             with self.assertRaises((TypeError, AttributeError), msg=error_input):
                 library.has_symbol(error_input)
+
+    def test_has_whitespace(self):
+        """Test the 'has_whitespace' function. """
+        # Test valids
+        contains_whitespace = [
+            '11 !',
+            'Foo Bar'
+            'alpha 1(',
+            'Bert ',
+            ' AlphaLion'
+        ]
+        for stri in contains_whitespace:
+            ans = library.has_whitespace(stri)
+            self.assertIsInstance(ans, bool, msg=stri)
+            self.assertTrue(ans, msg=stri)
+        # Test invalids
+        contains_no_whitespaces = [
+            '',
+            'a',
+            'aaaa',
+            '21312',
+            'FooBar',
+        ]
+        for stri in contains_no_whitespaces:
+            ans = library.has_whitespace(stri)
+            self.assertIsInstance(ans, bool, msg=stri)
+            self.assertFalse(ans, msg=stri)
+        # Test Errors
+        error_inputs = [
+            1,
+            b'foo',
+            [],
+            None,
+        ]
+        for error_input in error_inputs:
+            with self.assertRaises((TypeError, AttributeError), msg=error_input):
+                library.has_whitespace(error_input)
