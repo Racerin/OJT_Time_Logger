@@ -8,6 +8,8 @@ SECRET_KEY = "Please change me to something more secret."
 RECAPTCHA_PUBLIC_KEY = "Get this from Google recaptcha"
 RECAPTCHA_PRIVATE_KEY = "I think your site must be public."
 
+DATABASE = "database.db"
+
 
 # Login
 # REMEMBER_COOKIE_DURATION = 6

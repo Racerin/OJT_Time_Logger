@@ -17,16 +17,13 @@ import PARAM
 import library
 
 
-DATABASE_FILENAME = PARAM.DATABASE.FILENAME
-
-
 def get_db():
     """Connect to the application's configured database. The connection
     is unique for each request and will be reused if this is called
     again.
     """
     if "db" not in flask.g:
-        database_filename = flask.current_app.config["SQLITE_DATBASE_FILENAME"]
+        database_filename = flask.current_app.config["DATABASE"]
         flask.g.db = sqlite3.connect(database_filename)
         flask.g.db.row_factory = sqlite3.Row
     return flask.g.db
@@ -52,7 +49,7 @@ def init_db():
 
         "PRAGMA foreign_keys = ON;",
 
-        """CREATE TABLE Clock (
+        """CREATE TABLE Clocking (
             user_id,
             clock_in TEXT NOT NULL,
             clock_out TEXT,
@@ -77,6 +74,5 @@ def init_app(app):
     """Register database functions with the Flask app. This is called by
     the application factory.
     """
-    app.config["SQLITE_DATBASE_FILENAME"] = DATABASE_FILENAME
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
