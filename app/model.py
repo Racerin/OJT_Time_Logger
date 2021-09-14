@@ -22,7 +22,7 @@ import library
 @dataclasses.dataclass
 class User(flask_login.UserMixin):
 
-    user_id : int = ""
+    user_id : int = None
     username : str = ""
     password : str = dataclasses.field(default="", repr=False)   # Never stored.
     # salt_password : bytes = b""
@@ -110,6 +110,11 @@ class User(flask_login.UserMixin):
                 return None
 
         @classmethod
+        def get_user_from_id(cls, user_id : int) -> 'User':
+            """Get user from user_id."""
+            return cls.__get_user(user_id, 0)
+
+        @classmethod
         def get_user_from_email(cls, email : str) -> 'User':
             """Get user from email."""
             return cls.__get_user(email, 1)
@@ -189,6 +194,7 @@ class User(flask_login.UserMixin):
 def get_user():
     """Similiar to 'get_db' function, get the current user."""
     if "user" not in flask.g:
-        flask.g.user = User.DB.get_user_from_email(flask.session['_user_id'])
+        flask.g.user = flask_login.current_user
+        # flask.g.user = User.DB.get_user_from_id(flask.session['_user_id'])
     return flask.g.user
         
