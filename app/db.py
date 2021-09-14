@@ -10,11 +10,59 @@ __author__ = "Darnell Baird"
 
 import sqlite3
 import click
+import datetime
 
 import flask
 
 import PARAM
 import library
+
+
+#DATETIME: ISO8601
+
+
+def clock_in(user_id):
+    """Register an user's clock-in time."""
+    sql = "INSERT INTO Clocking (user_id, clock_in) VALUES(?,?);"
+    now = datetime.datetime.now().isoformat()
+    db = get_db()
+    db.execute(sql, (user_id, now,))
+    db.commit()
+
+
+def is_clocked_in(user_id) -> bool:
+    """Determine whether user is clocked in."""
+    sql = "SELECT * FROM Clocking WHERE user_id = ? ORDER BY clock_out DESC LIMIT 1;"
+    db = get_db()
+    rows = db.execute(sql, (user_id,))
+    for row in rows:
+        print(row['clock_out'], "row")
+        return False if row['clock_out'] == None else True
+    return False
+
+
+def clock_out(user_id):
+    """Clock-out user given they were clocked in."""
+    sql = """UPDATE Clocking 
+    SET clock_out = (DATETIME('now')) 
+    WHERE clock_out = NULL AND user_id = ?
+    LIMIT 1;
+    """
+    db = get_db()
+    db.execute(sql, (user_id,))
+    db.commit()
+
+
+def last_clock_in(user_id) -> datetime.datetime:
+    """Return the time the user was last clocked in."""
+    sql = """SELECT clock_in FROM Clocking 
+    WHERE user_id = ? 
+    ORDER BY clock_in DESC LIMIT 1;
+    """
+    rows = get_db().execute(sql, (user_id,))
+    for row in rows:
+        return datetime.datetime.fromisoformat(row['clock_in'])
+    return None
 
 
 def get_db():
@@ -45,10 +93,19 @@ def init_db():
 
     #Create Tables
     sqls = [
-        "DROP TABLE IF EXISTS Clock",
+        "DROP TABLE IF EXISTS Clocking",
 
         "PRAGMA foreign_keys = ON;",
 
+        """CREATE TABLE IF NOT EXISTS Users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            salt_password BLOB NOT NULL,
+            email TEXT UNIQUE,
+            is_admin INTEGER DEFAULT 0,
+            is_active INTEGER DEFAULT 1
+            ); """,
+        
         """CREATE TABLE Clocking (
             user_id,
             clock_in TEXT NOT NULL,

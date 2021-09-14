@@ -21,7 +21,7 @@ def create_app(test_config=False):
     """Create and configure an instance of the Flask application. """
     app = flask.Flask(__name__, instance_relative_config=True)
 
-    #Configurations
+    # Configurations
     app.testing = test_config
     app.config.from_object('config')
     #load 'instance' folder config. Do NOT include 'instance in production code. 
@@ -29,7 +29,7 @@ def create_app(test_config=False):
     if not app.config.from_pyfile('config.py', silent=True):
         app.logger.warning("Instance config could not be found.")
 
-    #Views
+    # Views
     # from . import views
     import app.views as temp_views
     temp_views.init_app(app)
@@ -38,10 +38,14 @@ def create_app(test_config=False):
     #Add database
     db.init_app(app)
     
-    #Apply blueprints to the app
+    # Apply blueprints to the app
     #flask-login and auth
     from . import user
     app.register_blueprint(user.bp)
     user.init_app(app)
+    #clock
+    from . import clocking
+    app.register_blueprint(clocking.bp)
+    # clocking.init_app(app)
     
     return app

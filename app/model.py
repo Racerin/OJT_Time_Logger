@@ -22,8 +22,7 @@ import library
 @dataclasses.dataclass
 class User(flask_login.UserMixin):
 
-    app = None
-
+    user_id : int = ""
     username : str = ""
     password : str = dataclasses.field(default="", repr=False)   # Never stored.
     # salt_password : bytes = b""
@@ -33,8 +32,10 @@ class User(flask_login.UserMixin):
     # https://flask-login.readthedocs.io/en/latest/#your-user-class
     is_active : bool = True
 
+    user_id = None
+
     def get_id(self):
-        return self.email
+        return self.DB.get_user_from_email(self.email).user_id
 
     def __post_init__(self):
         #assure password is salted
@@ -63,10 +64,11 @@ class User(flask_login.UserMixin):
     def from_row(cls, row) -> 'User':
         """Creates a user from a database row object."""
         usr = User(
+            user_id=row['user_id'],
             username=row['username'],
             salt_password=row['salt_password'],
             email=row['email'],
-            is_admin=bool(row['is_admin'])
+            is_admin=bool(row['is_admin']),
             )
         return usr
 
@@ -85,32 +87,11 @@ class User(flask_login.UserMixin):
     class DB:
 
         _user_unique_fields = ['user_id', 'email', 'username']
-
-        #classmethod
-        def create_table(cls, if_not_exists=True):
-            sql_insert = "IF NOT EXISTS" if if_not_exists else ""
-            sql = f"""CREATE TABLE {sql_insert} Users (
-            user_id INTEGER PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            salt_password BLOB NOT NULL,
-            email TEXT UNIQUE,
-            is_admin INTEGER DEFAULT 0,
-            is_active INTEGER DEFAULT 1
-            ); """
-            db = cls.get_db()
-            db.execute(sql)
-            db.commit()
  
         @classmethod
         def get_db(cls) -> sqlite3.Connection:
             db = DB.get_db()
             return db
-
-        @classmethod
-        def delete_table(cls):
-            sql = "DROP TABLE IF EXISTS User"
-            db = cls.get_db()
-            db.execute(sql)
 
         @classmethod
         def __get_user(cls, key, field_int) -> 'User':
@@ -149,7 +130,7 @@ class User(flask_login.UserMixin):
         @classmethod
         def email_exists(cls, email : str) -> bool:
             """Confirms whether email exists."""
-            sql = "SELECT email FROM Users email WHERE email==? LIMIT 1;"
+            sql = "SELECT email FROM Users WHERE email==? LIMIT 1;"
             db = cls.get_db()
             rows = db.execute(sql, (email,))
             for row in rows:
@@ -159,10 +140,10 @@ class User(flask_login.UserMixin):
         def login(cls, username_email : str, password : str) -> sqlite3.Row:
             """Returns valid user if username and password matches, else no user information.
             """
-            row = cls.get_user_from_username_email(username_email)
-            if row:
-                if library.is_password(password, row['salt_password']):
-                    return row
+            usr = cls.get_user_from_username_email(username_email)
+            if usr:
+                if library.is_password(password, usr.salt_password):
+                    return usr
             return None
 
         @classmethod
@@ -204,4 +185,10 @@ class User(flask_login.UserMixin):
             db.execute(sql)
             db.commit()
         
+
+def get_user():
+    """Similiar to 'get_db' function, get the current user."""
+    if "user" not in flask.g:
+        flask.g.user = User.DB.get_user_from_email(flask.session['_user_id'])
+    return flask.g.user
         

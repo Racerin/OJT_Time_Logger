@@ -1,0 +1,18 @@
+{% extends 'layout.jinja-html' %}
+{% block title %}Clocking{% endblock %}
+
+{% block body %}
+{% if form.is_clocked_in %}
+{# Render Clocked-out page #}
+<h2 class="navbar-item">Clock out</h2><br>
+<p>Good day {{current_user.username}}. You clocked in at {{form.last_clock_in}}.</p>
+<form method="POST" action="{{url_for('clocking.clock_out')}}"><input type="submit" value="Clock-Out"></form>
+{% else %}
+{# Render Clocked-in page #}
+<h2 class="message-header">Clock In:</h2>
+<p class="message-header">Good day {{current_user.username}}. You are currently clocked-out. <br>
+Press the Button Below to clock in.
+</p>
+<form method="POST" action="{{url_for('clocking.clock_in')}}"><input type="submit" value="Clock-In"></form>
+{% endif %}
+{% endblock body %}

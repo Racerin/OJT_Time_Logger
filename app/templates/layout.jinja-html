@@ -30,6 +30,9 @@
                                     <a href="{#{ url_for('user.settings') }#}" class="navbar-item">
                                         Profile
                                     </a>
+                                    <a href="{{ url_for('clocking.home') }}" class="navbar-item">
+                                        Clocking
+                                    </a>
                                     <a href="{{ url_for('user.settings') }}" class="navbar-item">
                                         Settings
                                     </a>
