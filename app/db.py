@@ -32,24 +32,26 @@ def clock_in(user_id):
 
 def is_clocked_in(user_id) -> bool:
     """Determine whether user is clocked in."""
-    sql = "SELECT * FROM Clocking WHERE user_id = ? ORDER BY clock_out DESC LIMIT 1;"
+    sql = "SELECT clock_out FROM Clocking WHERE user_id = ? ORDER BY clock_in DESC LIMIT 1;"
     db = get_db()
     rows = db.execute(sql, (user_id,))
     for row in rows:
-        print(row['clock_out'], "row")
-        return False if row['clock_out'] == None else True
+        if row['clock_out'] is None:
+            return True 
     return False
 
 
 def clock_out(user_id):
     """Clock-out user given they were clocked in."""
     sql = """UPDATE Clocking 
-    SET clock_out = (DATETIME('now')) 
-    WHERE clock_out = NULL AND user_id = ?
+    SET clock_out = ?
+    WHERE clock_out IS NULL AND user_id = ?
+    ORDER BY clock_in DESC
     LIMIT 1;
     """
+    now = datetime.datetime.now()
     db = get_db()
-    db.execute(sql, (user_id,))
+    db.execute(sql, (now, user_id,))
     db.commit()
 
 
@@ -60,7 +62,9 @@ def last_clock_in(user_id) -> datetime.datetime:
     ORDER BY clock_in DESC LIMIT 1;
     """
     rows = get_db().execute(sql, (user_id,))
+    print('last_clock_in')
     for row in rows:
+        print(row['clock_in'])
         return datetime.datetime.fromisoformat(row['clock_in'])
     return None
 
@@ -110,7 +114,7 @@ def init_db():
             user_id,
             clock_in TEXT NOT NULL,
             clock_out TEXT,
-            comment TEXT,
+            comment TEXT DEFAULT "",
             FOREIGN KEY(user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE
             );""",
     ]

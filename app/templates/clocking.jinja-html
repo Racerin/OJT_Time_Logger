@@ -5,7 +5,7 @@
 {% if form.is_clocked_in %}
 {# Render Clocked-out page #}
 <h2 class="navbar-item">Clock out</h2><br>
-<p>Good day {{current_user.username}}. You clocked in at {{form.last_clock_in}}.</p>
+<p>Good day {{current_user.username}}. You clocked in at {{form.last_clock_in_nice()}}.</p>
 <form method="POST" action="{{url_for('clocking.clock_out')}}"><input type="submit" value="Clock-Out"></form>
 {% else %}
 {# Render Clocked-in page #}

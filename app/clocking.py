@@ -14,33 +14,43 @@ bp = flask.Blueprint('clocking', __name__, url_prefix='/clocking')
 
 class ClockForm():
     def __init__(self):
-        user_id = model.get_user().user_id
+        user_id = getattr(model.get_user(), 'user_id', None)
         self.is_clocked_in = db.is_clocked_in(user_id)
         self.last_clock_in = db.last_clock_in(user_id)
-        # self.last_clock_in = "Today"
+
+    def last_clock_in_nice(self):
+        """Returns a nice-looking string of the 
+        'last_clock_in' return value.
+        """
+        # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+        # str1 = self.last_clock_in.strftime('%c')
+        str1 = self.last_clock_in.strftime('%A %d %b, %I:%M %p')
+        return str1
 
 
 @bp.route("/")
 @user.flask_login.login_required
 def home():
+    clock_form = ClockForm()
     return flask.render_template(
         PARAM.HTML.CLOCKING, 
-        form=ClockForm(),
+        form=clock_form,
         )
 
 
 @bp.route("/clock_out", methods=['POST'])
 @user.flask_login.login_required
 def clock_out():
-    db.clock_out(model.get_user().user_id)
+    user_id = getattr(model.get_user(), 'user_id', None)
+    db.clock_out(user_id)
     return flask.redirect( flask.url_for("home") )
 
 
 @bp.route("/clock_in", methods=['POST'])
 @user.flask_login.login_required
 def clock_in():
-    current_user = model.get_user()
-    db.clock_in(current_user.email)
+    user_id = getattr(model.get_user(), 'user_id', None)
+    db.clock_in(user_id)
     return flask.redirect( flask.url_for("home") )
 
 
