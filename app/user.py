@@ -154,10 +154,8 @@ def load_user(username_email) -> 'model.User':
      from the user ID stored in the session.
     https://flask-login.readthedocs.io/en/latest/#how-it-works
     """
-    #Get user row in database
-    row = model.User.DB.get_user_from_username_email(username_email)
-    #Create user from row
-    return model.User.from_row(row)
+    #Get user in database
+    return model.User.DB.get_user_from_username_email(username_email)
 
 
 @login_manager.unauthorized_handler
@@ -210,10 +208,10 @@ def login():
         username_email = form.username_email.data
         password = form.password.data
         remember_me = form.remember_me.data
-        row = db.login(username_email, password)
-        if row:
+        # user = db.login(username_email, password)
+        usr = model.User.DB.login(username_email, password)
+        if usr:
             flask.flash("Valid user login.", "debug")
-            usr = model.User.from_row(row)
             if flask_login.login_user(usr, remember=remember_me):
                 flask.flash("You have successfuly logged in.", 'info')
                 return flask.redirect( flask.url_for("home") )
