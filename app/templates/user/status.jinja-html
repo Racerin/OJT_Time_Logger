@@ -13,7 +13,7 @@
     {% endif %}
     {{ current_user }}
     </p>
-{% endif %}
+{% endif %}<br>
 <!-- Session -->
 {% if session %}
     <h2>Session:</h2>
@@ -25,21 +25,21 @@
             {{key}}: {{session[key]}}<br>
         {% endfor %}
     </p>
-{% endif %}
+{% endif %}<br>
 <!-- Request -->
 {% if request %}
-    <h2>Request</h2>
+    <h2>Request:</h2>
     <p>{{request.data}}</p>
-{% endif %}
+{% endif %}<br>
 <!-- Global: g -->
 {% if g %}
-    <h2>Globals</h2>
+    <h2>Globals:</h2>
     <p>
         {% for val in g %}
             {{val}}<br>
         {% endfor %}
     </p>
-{% endif %}
+{% endif %}<br>
 <!-- Config -->
 {% if config %}
     <h2>Config:</h2>
@@ -48,6 +48,6 @@
             {{k}}: {{v}}<br>
         {% endfor %}
     </p>
-{% endif %}
+{% endif %}<br>
 
 {% endblock body %}
