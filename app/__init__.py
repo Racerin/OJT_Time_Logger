@@ -14,6 +14,7 @@ import os
 import flask
 
 import PARAM
+import configmodule
 from . import db
 
 
@@ -23,11 +24,19 @@ def create_app(test_config=False):
 
     # Configurations
     app.testing = test_config
-    app.config.from_object('config')
-    #load 'instance' folder config. Do NOT include 'instance in production code. 
+    if app.testing:
+        app.config.from_object(configmodule.TestingConfig)
+    elif app.config['ENV'] == 'development':
+        app.config.from_object(configmodule.DevelopmentConfig)
+    elif app.config['ENV'] == 'production':
+        app.config.from_object(configmodule.ProductionConfig)
+    else:
+        app.config.from_object(configmodule.Config)
+    # Config with environment variable
     app.config.from_envvar('FLASK_SECRET_KEY', silent=True)
+    # Load 'instance' folder's config. Do NOT include 'instance in production code. 
     if not app.config.from_pyfile('config.py', silent=True):
-        app.logger.warning("Instance config could not be found.")
+        app.logger.warning("'instance/config' could not be found.")
 
     # Views
     # from . import views
