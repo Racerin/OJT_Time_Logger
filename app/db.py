@@ -22,6 +22,14 @@ import library
 #DATETIME: ISO8601
 
 
+def salt_password(pw, iterations) -> bytes:
+    """Salt password according to settings in library and config."""
+    return library.salt_password(
+        pw, 
+        flask.current_app.config['SALT'], 
+        iterations=PARAM.CONSTANTS.SALT_ITERATIONS,
+        )
+
 
 def clock_in(user_id):
     """Register an user's clock-in time."""

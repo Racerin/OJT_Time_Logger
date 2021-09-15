@@ -10,8 +10,7 @@ __all__ = ["check_email"]
 import re
 import hashlib
 
-import config
-import library
+import PARAM
 
 
 #https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/
@@ -28,20 +27,21 @@ def is_email(email) -> bool:
     return False
 
 
-#PASSWORD CONTROL
-pw_salt = getattr(library.config, "SALT", "").encode("utf-8")
-
-
-def salt_password(pw: 'str|bytes', iterations=int(1e6)) -> bytes:
+def salt_password(
+    pw: 'str|bytes', 
+    salt:'str|bytes', 
+    iterations=PARAM.CONSTANTS.SALT_ITERATIONS
+    ) -> bytes:
     """Salts password using pbkdf2_hmac."""
     if len(pw) == 0:
         raise ValueError("Password must be longer than 0.")
     # https://nitratine.net/blog/post/how-to-hash-passwords-in-python/
     b_password = pw if isinstance(pw, bytes) else pw.encode('utf-8')
+    b_salt = salt if isinstance(salt, bytes) else salt.encode('utf-8')
     key = hashlib.pbkdf2_hmac(
         hash_name='sha256', 
         password=b_password, 
-        salt=pw_salt, 
+        salt=b_salt,
         iterations=iterations,
         )
     return key
