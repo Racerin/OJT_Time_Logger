@@ -9,12 +9,19 @@ __all__ = ["check_email"]
 
 import re
 import hashlib
+import sqlite3
 
 import PARAM
 
 
 #https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/
 email_patt = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+
+def get_db(filename : str):
+    conn = sqlite3.connect(filename)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def is_email(email) -> bool:

@@ -9,7 +9,6 @@ __author__ = "Darnell Baird"
 
 
 import os
-import sqlite3
 import click
 import datetime
 
@@ -86,8 +85,7 @@ def get_db():
     """
     if "db" not in flask.g:
         database_filename = flask.current_app.config["DATABASE"]
-        flask.g.db = sqlite3.connect(database_filename)
-        flask.g.db.row_factory = sqlite3.Row
+        flask.g.db = library.get_db(database_filename)
     return flask.g.db
 
 
@@ -118,15 +116,8 @@ def init_db():
     'flaskr' github Rendition.
     """
     db = get_db()
-
     with flask.current_app.open_resource("schema.sql") as f:
         db.executescript(f.read().decode("utf8"))
-
-
-def del_db():
-    """Delete database file."""
-    close_db()
-    os.remove(flask.current_app.config['DATABASE'])
 
 
 @click.command("init-db")
