@@ -113,35 +113,14 @@ def query_db(query : str, args=(), one=False):
 
 
 def init_db():
-    """Clear existing data, create new tables, and add admin and dumby user."""
+    """Clear existing data, create new tables, and add admin and dumby user.
+    https://flask.palletsprojects.com/en/2.0.x/patterns/sqlite3/#initial-schemas
+    'flaskr' github Rendition.
+    """
     db = get_db()
 
-    #Create Schema
-    sqls = [
-        "DROP TABLE IF EXISTS Clocking",
-
-        "PRAGMA foreign_keys = ON;",
-
-        """CREATE TABLE IF NOT EXISTS Users (
-            user_id INTEGER PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL,
-            salt_password BLOB NOT NULL,
-            email TEXT UNIQUE,
-            is_admin INTEGER DEFAULT 0,
-            is_active INTEGER DEFAULT 1
-            ); """,
-        
-        """CREATE TABLE Clocking (
-            user_id,
-            clock_in TEXT NOT NULL,
-            clock_out TEXT,
-            comment TEXT DEFAULT "",
-            FOREIGN KEY(user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE
-            );""",
-    ]
-    for sql in sqls:
-        db.execute(sql)
-    db.commit() #idk if needed
+    with flask.current_app.open_resource("schema.sql") as f:
+        db.executescript(f.read().decode("utf8"))
 
 
 def del_db():
