@@ -8,6 +8,7 @@ __version__ = '0.1'
 __author__ = "Darnell Baird"
 
 
+import os
 import sqlite3
 import click
 import datetime
@@ -19,6 +20,7 @@ import library
 
 
 #DATETIME: ISO8601
+
 
 
 def clock_in(user_id):
@@ -132,6 +134,12 @@ def init_db():
     for sql in sqls:
         db.execute(sql)
     db.commit() #idk if needed
+
+
+def del_db():
+    """Delete database file."""
+    close_db()
+    os.remove(flask.current_app.config['DATABASE'])
 
 
 @click.command("init-db")
