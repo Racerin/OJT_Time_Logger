@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS Clocking
+DROP TABLE IF EXISTS Clocking;
 
 PRAGMA foreign_keys = ON;
 
