@@ -91,11 +91,22 @@ def close_db(e=None):
         db.close()
 
 
+def query_db(query : str, args=(), one=False):
+    """
+    Execute the 'query' arg in sqlite connection with arguments 'args'.
+    https://flask.palletsprojects.com/en/2.0.x/patterns/sqlite3/#easy-querying
+    """
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
+    return (rv[0] if rv else None) if one else rv
+
+
 def init_db():
     """Clear existing data, create new tables, and add admin and dumby user."""
     db = get_db()
 
-    #Create Tables
+    #Create Schema
     sqls = [
         "DROP TABLE IF EXISTS Clocking",
 
