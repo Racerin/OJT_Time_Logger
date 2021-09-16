@@ -58,10 +58,12 @@ class TestUser(unittest.TestCase):
             connection = DB.get_db()
             rows = connection.execute(sql)
             n_admins = 0
-            for i, row in enumerate(rows):
+            for row in rows:
                 n_admins += 1
                 admin_row = row
                 print(row['is_admin'])
-            self.assertEqual(n_admins, 1, msg="There should only be one admin.")
+            self.assertEqual(
+                n_admins, 1, 
+                msg=f"There should be one admin. {n_admins} found.")
             self.assertEqual(admin_row['is_admin'], 1)
             self.assertEqual(admin_row['username'], 'admin')
