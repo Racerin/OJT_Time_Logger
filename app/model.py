@@ -40,12 +40,12 @@ class User(flask_login.UserMixin):
     def __post_init__(self):
         #assure password is salted
         if self.password and isinstance(self.password, str):
-            self.salt_password = library.salt_password(self.password)
+            self.salt_password = DB.salt_password(self.password)
         #Assign password property
         self.password = property(
             # lambda: raise ValueError("Cannot access user password."),
             lambda: None,
-            lambda pw: setattr(self, "salt_password", library.salt_password(pw)),
+            lambda pw: setattr(self, "salt_password", DB.salt_password(pw)),
             lambda: delattr(self, 'salt_password'),
             )
 
@@ -75,18 +75,18 @@ class User(flask_login.UserMixin):
     def __eq__(self, other):
         """Compare none property attributes."""
         for k,v in vars(self).items():
+            # Ignore functions and property values
             if callable(v) or isinstance(v, property): continue
             try:
                 if v != getattr(other, k):
-                    print("This is the wrong attribute:", k, v)
                     return False
             except ValueError:
                 return False
-        return True or super(User).__eq__(other)
+        return True
 
     class DB:
 
-        _user_unique_fields = ['user_id', 'email', 'username']
+        _user_unique_fields = ['user_id', 'email', 'username', 'is_admin']
  
         @classmethod
         def get_db(cls) -> sqlite3.Connection:
@@ -147,7 +147,7 @@ class User(flask_login.UserMixin):
             """
             usr = cls.get_user_from_username_email(username_email)
             if usr:
-                if library.is_password(password, usr.salt_password):
+                if DB.is_password(password, usr.salt_password):
                     return usr
             return None
 
@@ -172,7 +172,7 @@ class User(flask_login.UserMixin):
             users = [
                 User(
                     username='FooBar',
-                    salt_password=b'\x86\x98\xc8/=\x121\xd0\xf5E\xf0\x1b\xba\x17\xec\xe5\x0eG\xd3\x11\xc5O\xef\xf7\xbe\xd3\xa5\x80\x10\x85\xe6^',
+                    password='goatmilk',
                     email='example@example.com',
                 ),
             ]
