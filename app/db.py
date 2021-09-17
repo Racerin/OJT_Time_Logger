@@ -21,12 +21,13 @@ import library
 #DATETIME: ISO8601
 
 
-def salt_password(pw, iterations) -> bytes:
+def salt_password(pw, iterations=PARAM.CONSTANTS.SALT_ITERATIONS) -> bytes:
     """Salt password according to settings in library and config."""
+    # with flask.current_app.app_context():
     return library.salt_password(
         pw, 
         flask.current_app.config['SALT'], 
-        iterations=PARAM.CONSTANTS.SALT_ITERATIONS,
+        iterations=iterations,
         )
 
 
@@ -111,13 +112,38 @@ def query_db(query : str, args=(), one=False):
 
 
 def init_db():
-    """Clear existing data, create new tables, and add admin and dumby user.
+    """Clear existing database and create schema and admin user
     https://flask.palletsprojects.com/en/2.0.x/patterns/sqlite3/#initial-schemas
     'flaskr' github Rendition.
     """
     db = get_db()
     with flask.current_app.open_resource("schema.sql") as f:
         db.executescript(f.read().decode("utf8"))
+    # Create admin user.
+    init_admin()
+
+
+def init_admin():
+    """Place admin user in database."""
+    db = get_db()
+    sql = """INSERT INTO Users(
+        username, salt_password, email, is_admin
+        ) VALUES(
+            'admin', :salted_password, :email, 1);
+            """
+    # Get values
+    #password
+    pw = flask.current_app.config['ADMIN_PASSWORD']
+    salt = flask.current_app.config['SALT']
+    salted_password = library.salt_password(pw, salt)
+    #email
+    email = flask.current_app.config['ADMIN_EMAIL']
+    values = dict(
+        salted_password=salted_password,
+        email=email,
+        )
+    db.execute(sql, values)
+    db.commit()
 
 
 @click.command("init-db")

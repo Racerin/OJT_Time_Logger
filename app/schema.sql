@@ -1,8 +1,10 @@
 DROP TABLE IF EXISTS Clocking;
 
+DROP TABLE IF EXISTS Users;
+
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE Users (
     user_id INTEGER PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     salt_password BLOB NOT NULL,

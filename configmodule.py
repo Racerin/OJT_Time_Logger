@@ -12,12 +12,14 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = "I think your site must be public."
 
     DATABASE = "database.db"
+    SALT = "salt"
+    ADMIN_EMAIL = "admin@example.com"
+    ADMIN_PASSWORD = "password"
 
 
     # Login
     # REMEMBER_COOKIE_DURATION = 6
     # REMEMBER_COOKIE_DURATION = datetime.timedelta(days=6)
-    SALT = ""
 
 
     #Forms
@@ -31,7 +33,7 @@ class TestingConfig(Config):
 
 
 class DevelopmentConfig(Config):
-    pass
+    DATABASE = 'test.db'
 
 
 class ProductionConfig(Config):
