@@ -54,6 +54,14 @@ def clock_in():
     return flask.redirect( flask.url_for("home") )
 
 
+@bp.route("/submits", methods=['GET', 'POST'])
+@model.user.admin_access
+def edit():
+    if flask.request.method == 'POST':
+        pass
+    return PARAM.HTML.EDIT
+
+
 @bp.route("/<string:str1>")
 def anything(str1):
     return f"This is the string; \n'{str1}'"

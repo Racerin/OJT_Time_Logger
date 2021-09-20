@@ -12,7 +12,7 @@ class HTML:
     MESSAGE = "user/message.jinja-html"
     #clocking
     CLOCKING = 'clocking/clocking.jinja-html'
-    EDIT = 'clocking/edit.jinja-html'
+    CLOCKING_EDIT = 'clocking/edit.jinja-html'
 
 class CONFIG:
     APP = "app.cfg"
