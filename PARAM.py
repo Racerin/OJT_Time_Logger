@@ -1,6 +1,5 @@
 class HTML:
     HOME = "index.jinja-html"
-    CLOCKING = 'clocking.jinja-html'
     #user
     REGISTER = "/user/register.jinja-html"
     LOGIN = "user/login.jinja-html"
@@ -11,6 +10,9 @@ class HTML:
     STATUS = "user/status.jinja-html"
     EXECUTE = "user/execute.jinja-html"
     MESSAGE = "user/message.jinja-html"
+    #clocking
+    CLOCKING = 'clocking/clocking.jinja-html'
+    EDIT = 'clocking/edit.jinja-html'
 
 class CONFIG:
     APP = "app.cfg"

@@ -1,0 +1,6 @@
+{% extends 'layout' %}
+{% block title %}Edit User{% endblock title %}
+
+{% block body %}
+
+{% endblock body %}
