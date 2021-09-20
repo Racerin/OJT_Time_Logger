@@ -18,7 +18,7 @@ import configmodule
 from . import db
 
 
-def create_app(test_config=False):
+def create_app(test_config=False) -> flask.Flask:
     """Create and configure an instance of the Flask application. """
     app = flask.Flask(__name__, instance_relative_config=True)
 
