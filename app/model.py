@@ -71,7 +71,7 @@ class User(flask_login.UserMixin):
             is_admin=bool(row['is_admin']),
             )
         return usr
-
+        
     def __eq__(self, other):
         """Compare none property attributes."""
         for k,v in vars(self).items():
@@ -133,8 +133,21 @@ class User(flask_login.UserMixin):
             return row
 
         @classmethod
+        def _exists(cls, val, field_int) -> bool:
+            """Determine whether val of Users'
+            field of 'field_int' exists.
+            """
+            attr = cls._user_unique_fields[field_int]
+            sql = f"SELECT {attr} FROM Users WHERE {attr}=? LIMIT 1;"
+            db = cls.get_db()
+            rows = db.execute(sql, (val,))
+            for row in rows:
+                return val == row[attr]     #redundant
+ 
+        @classmethod
         def email_exists(cls, email : str) -> bool:
             """Confirms whether email exists."""
+            return cls._exists(email, 1)
             sql = "SELECT email FROM Users WHERE email==? LIMIT 1;"
             db = cls.get_db()
             rows = db.execute(sql, (email,))
@@ -191,7 +204,7 @@ class User(flask_login.UserMixin):
             db.commit()
         
 
-def get_user():
+def get_user() -> User:
     """Similiar to 'get_db' function, get the current user."""
     if "user" not in flask.g:
         flask.g.user = flask_login.current_user
