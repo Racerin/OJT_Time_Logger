@@ -2,5 +2,11 @@
 {% block title %}Edit User{% endblock title %}
 
 {% block body %}
-
+<h2>Edit clockings:</h2>
+<form action='{{url_for("clocking.edit")}}' method="POST">
+    <!-- <input type="text"> -->
+    {{form.sql.label}}<br>
+    {{form.sql}}
+    <input type="submit">
+</form>
 {% endblock body %}

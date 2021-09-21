@@ -2,6 +2,9 @@
 
 import flask
 
+import flask_wtf
+import wtforms
+
 import library
 import PARAM
 from . import db
@@ -26,6 +29,16 @@ class ClockForm():
         # str1 = self.last_clock_in.strftime('%c')
         str1 = self.last_clock_in.strftime('%A %d %b, %I:%M %p')
         return str1
+
+
+class EditForm(flask_wtf.FlaskForm):
+    def __init__(self):
+        sql = flask_wtf.StringField(
+            label='sql',
+            validators=[
+                # wtforms.validators.DataRequired(),
+            ]
+        )
 
 
 @bp.route("/")
@@ -55,11 +68,12 @@ def clock_in():
 
 
 @bp.route("/submits", methods=['GET', 'POST'])
-@model.user.admin_access
+@model.User.admin_access
 def edit():
+    form = EditForm()
     if flask.request.method == 'POST':
-        pass
-    return PARAM.HTML.EDIT
+        print(form)
+    return flask.render_template(PARAM.HTML.CLOCKING_EDIT, form=form)
 
 
 @bp.route("/<string:str1>")
