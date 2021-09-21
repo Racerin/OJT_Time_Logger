@@ -21,7 +21,7 @@ import library
 #DATETIME: ISO8601
 
 
-def salt_password(pw, iterations=PARAM.CONSTANTS.SALT_ITERATIONS) -> bytes:
+def salt_password(pw : str, iterations=PARAM.CONSTANTS.SALT_ITERATIONS) -> bytes:
     """Salt password according to settings in library and config."""
     # with flask.current_app.app_context():
     return library.salt_password(
