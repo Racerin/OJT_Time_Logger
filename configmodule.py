@@ -33,7 +33,8 @@ class TestingConfig(Config):
 
 
 class DevelopmentConfig(Config):
-    DATABASE = 'test.db'
+    # DATABASE = 'test.db'
+    pass
 
 
 class ProductionConfig(Config):
