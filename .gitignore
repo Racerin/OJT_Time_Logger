@@ -1,5 +1,9 @@
 venv
 /instance
+/*.db
+
+#vscode
+settings.json
 
 #Noise
 *.pyc
