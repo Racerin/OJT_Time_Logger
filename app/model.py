@@ -174,7 +174,7 @@ class User(flask_login.UserMixin):
             """
             usr = cls.get_user_from_username_email(username_email)
             if usr:
-                if DB.is_password(password, usr.salt_password):
+                if DB.salt_password(password) == usr.salt_password:
                     return usr
             return None
 
