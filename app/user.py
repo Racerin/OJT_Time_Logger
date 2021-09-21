@@ -160,7 +160,7 @@ def load_user(username_email) -> 'model.User':
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    """View returned if user failed ot log in."""
+    """View returned if user failed to log in."""
     flask.flash("Invalid User login.")
     return flask.render_template(PARAM.HTML.UNAUTH)
 
@@ -208,7 +208,6 @@ def login():
         username_email = form.username_email.data
         password = form.password.data
         remember_me = form.remember_me.data
-        # user = db.login(username_email, password)
         usr = model.User.DB.login(username_email, password)
         if usr:
             flask.flash("Valid user login.", "debug")
@@ -222,7 +221,7 @@ def login():
                      "error")
                 return flask.redirect("/user/login")
         else:
-            flask.flash("We couldn't find the user in the database.", "error")
+            flask.flash("Incorrect login information. Please try again.", "error")
             return flask.redirect("/user/login")
     else:
         flask.flash("The form data is invalid.", 'debug')
