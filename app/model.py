@@ -10,7 +10,9 @@ __version__ = "0.1"
 __all__ = ["User"]
 
 
-import dataclasses, sqlite3
+import dataclasses
+import sqlite3
+import functools
 
 import flask
 import flask_login
@@ -71,7 +73,19 @@ class User(flask_login.UserMixin):
             is_admin=bool(row['is_admin']),
             )
         return usr
-        
+
+    @classmethod
+    def admin_access(cls, func):
+        """Wrapper function for granting access if is admin."""
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            usr = get_user()
+            if usr.is_admin:
+                return func(*args, **kwargs)
+            else:
+                return "Unauthorized Access."
+        return wrapper
+
     def __eq__(self, other):
         """Compare none property attributes."""
         for k,v in vars(self).items():
