@@ -29,11 +29,13 @@ class Config:
 
 class TestingConfig(Config):
     TESTING = True
+    WTF_CSRF_ENABLED = False
     DATABASE = 'test.db'
 
 
 class DevelopmentConfig(Config):
     # DATABASE = 'test.db'
+    WTF_CSRF_ENABLED = False
     pass
 
 

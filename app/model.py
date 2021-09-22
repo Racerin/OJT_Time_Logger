@@ -27,23 +27,20 @@ class User(flask_login.UserMixin):
     user_id : int = None
     username : str = ""
     password : str = dataclasses.field(default="", repr=False)   # Never stored.
-    # salt_password : bytes = b""
     salt_password : bytes = dataclasses.field(default=b'', repr=False)
     email : str = ""
     is_admin : bool = False
     # https://flask-login.readthedocs.io/en/latest/#your-user-class
     is_active : bool = True
 
-    user_id = None
-
     def get_id(self):
         return self.DB.get_user_from_email(self.email).user_id
 
     def __post_init__(self):
-        #assure password is salted
+        # Ensure password is salted
         if self.password and isinstance(self.password, str):
             self.salt_password = DB.salt_password(self.password)
-        #Assign password property
+        # Assign password property
         self.password = property(
             # lambda: raise ValueError("Cannot access user password."),
             lambda: None,
@@ -98,6 +95,7 @@ class User(flask_login.UserMixin):
                 return False
         return True
 
+
     class DB:
 
         _user_unique_fields = ['user_id', 'email', 'username', 'is_admin']
@@ -120,7 +118,7 @@ class User(flask_login.UserMixin):
                 for row in rows:
                     return User.from_row(row)
             except sqlite3.ProgrammingError:
-                flask.flask(f"There was an error in retrieving the user via '{user_field}'.")
+                flask.flash(f"There was an error in retrieving the user via '{user_field}'.")
                 return None
 
         @classmethod
@@ -216,12 +214,4 @@ class User(flask_login.UserMixin):
             db = cls.get_db()
             db.execute(sql)
             db.commit()
-        
-
-def get_user() -> User:
-    """Similiar to 'get_db' function, get the current user."""
-    if "user" not in flask.g:
-        flask.g.user = flask_login.current_user
-        # flask.g.user = User.DB.get_user_from_id(flask.session['_user_id'])
-    return flask.g.user
         
