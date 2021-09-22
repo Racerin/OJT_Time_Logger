@@ -1,3 +1,5 @@
+import os
+import tempfile
 import unittest
 
 import library
@@ -124,7 +126,7 @@ class TestLibrary(unittest.TestCase):
                 library.has_digit(error_input)
 
 
-    def test_letter(self):
+    def test_has_letter(self):
         """Test the 'has_letter' function. """
         # Test valids
         contains_letter = [
@@ -233,3 +235,18 @@ class TestLibrary(unittest.TestCase):
         for error_input in error_inputs:
             with self.assertRaises((TypeError, AttributeError), msg=error_input):
                 library.has_whitespace(error_input)
+
+    def test_del_file(self):
+        """Test the 'del_file' function."""
+        # Create file
+        _, filename = tempfile.mkstemp()
+        with open(filename, mode='+w'):
+            pass
+        # Test existence
+        assert os.path.exists(filename), "The file should exists."
+        # Delete File
+        library.del_file(filename)
+        # Test inexistence
+        assert not os.path.exists(filename), "The file should not exist."
+        # Test non-existence
+        library.del_file(filename)
