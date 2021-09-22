@@ -8,30 +8,17 @@ import sqlite3
 import flask
 
 import app as App
-import app.db as db
-
-from . import TempDatabaseHandler
+import app.db as DB
 
 
 class TestGetDB(unittest.TestCase):
     
-    orig_db_filename = 'database.db'
-
-    @classmethod
-    def setUpClass(cls):
-        #Copy and save original database away
-        cls.temp_db_handler = TempDatabaseHandler(cls.orig_db_filename)
-
-    @classmethod
-    def tearDownClass(cls):
-        #Restore original database
-        del cls.temp_db_handler     #must be explicit
     
     def test_get_db(self):
         #Initiate App
-        app = App.create_app()
+        app = App.create_app(test_config=True)
         with app.app_context():
-            connection = db.get_db()
+            connection = DB.get_db()
             self.assertIsInstance(connection, sqlite3.Connection)
             self.assertTrue(issubclass(connection.row_factory, sqlite3.Row))
 

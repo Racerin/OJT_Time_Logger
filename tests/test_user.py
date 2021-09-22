@@ -3,8 +3,8 @@ import unittest
 import flask
 
 import app as App
+import app.db as DB
 
-from . import TempDatabaseHandler
 from instance import config as instance_config
 
 import app.user as app_user
@@ -14,19 +14,8 @@ class TestPages(unittest.TestCase):
 
     vldr_msgs = app_user.UserRegisterForm._vldr_msgs
 
-    @classmethod
-    def setUpClass(cls):
-        cls.temp_db_handler = TempDatabaseHandler('database.db')
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.temp_db_handler
-
     def setUp(self):
         self.app = App.create_app(test_config=True)
-
-    def tearDown(self):
-        return super().tearDown()
 
     def test_register(self):
         """Test user register page."""
@@ -113,19 +102,8 @@ class TestPages(unittest.TestCase):
 
 class TestUser(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.temp_db_handler = TempDatabaseHandler('database.db')
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.temp_db_handler
-
     def setUp(self) -> None:
         self.app = App.create_app(test_config=True)
-
-    def tearDown(self) -> None:
-        pass
     
     def test_sign_in_out(self):
         """Ensure user can log in and out, and is with correct privileges."""
@@ -194,14 +172,6 @@ class TestUser(unittest.TestCase):
 
 
 class TestAdminUser(TestUser):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.temp_db_handler = TempDatabaseHandler('database.db')
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.temp_db_handler
 
     def test_sign_in_out(self):
         """Ensure admin could sign in and out with correct privilages?"""

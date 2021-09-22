@@ -6,19 +6,10 @@ import app as App
 import app.model as app_model
 import app.db as DB
 
-from . import TempDatabaseHandler
 from instance import config as instance_config
 
 
 class TestUser(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.temp_db_handler = TempDatabaseHandler('database.db')
-
-    @classmethod
-    def tearDownClass(cls):
-        del cls.temp_db_handler #must be explicit
 
     def setUp(self):
         self.app = App.create_app(test_config=True)
@@ -26,14 +17,16 @@ class TestUser(unittest.TestCase):
 
     def test_users(self):
         """Insert, Select, and Delete users from the database"""
-        user1 = app_model.User(
-            username="John Smith", 
-            password="secret m3!",
-            email="john@example.com",
-            )
         with self.app.test_request_context():
+            user1 = app_model.User(
+                username="John Smith", 
+                password="secret m3!",
+                email="john@example.com",
+                )
             # Insert user
             app_model.User.DB.insert_user(user1)
+            #assign user_id
+            user1.user_id = user1.get_id()
             # self.assertTrue(app_model.DB.email_exists(user1.email))   #Not tested as yet
             # Get User
             user1_ret_email = app_model.User.DB.get_user_from_email(user1.email)

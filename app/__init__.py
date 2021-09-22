@@ -10,10 +10,13 @@ __all__ = ["create_app", ]
 
 import toml
 import os
+import tempfile
+import atexit
 
 import flask
 
 import PARAM
+import library
 import configmodule
 from . import db
 
@@ -26,6 +29,12 @@ def create_app(test_config=False) -> flask.Flask:
     app.testing = test_config
     if app.testing:
         app.config.from_object(configmodule.TestingConfig)
+        # Create a test database
+        _, app.config['DATABASE'] = tempfile.mkstemp(suffix='.db')
+        with app.app_context():
+            db.init_db()
+        # Delete database when finished
+        atexit.register(library.del_file, filename=app.config['DATABASE'])
     elif app.config['ENV'] == 'development':
         app.config.from_object(configmodule.DevelopmentConfig)
     elif app.config['ENV'] == 'production':
