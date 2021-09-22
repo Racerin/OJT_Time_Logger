@@ -6,6 +6,23 @@ import library
 
 class TestLibrary(unittest.TestCase):
     
+    def test_get_db(self):
+        """Test 'get_db' function."""
+        _, filename = tempfile.mkstemp()
+        # Create database connection
+        conn = library.get_db(filename)
+        # Test connnection attributes
+        self.assertIsInstance(conn, library.sqlite3.Connection)
+        self.assertIs(conn.row_factory, library.sqlite3.Row)
+        # Test bad inputs
+        err_inputs = (
+            ([],TypeError),
+            (1,TypeError),
+            ('',ValueError),
+        )
+        for err_input, err in err_inputs:
+            with self.assertRaises(err, msg=err_input):
+                library.get_db(err_input)
 
     def test_is_email(self):
         """Test for 'is_email' function."""
