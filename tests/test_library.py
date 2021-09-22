@@ -47,6 +47,7 @@ class TestLibrary(unittest.TestCase):
 
     def test_salt_password(self):
         """Test 'salt_password' function."""
+        salt = "fish"
         passwords = [
             'apple',
             '1',
@@ -55,7 +56,7 @@ class TestLibrary(unittest.TestCase):
             b'a'
         ]
         for pw in passwords:
-            ans = library.salt_password(pw, iterations=2)
+            ans = library.salt_password(pw, salt, iterations=2)
             # Returns a byte
             self.assertIsInstance(ans, bytes, msg=pw)
             # Input doesn NOT equal output
@@ -70,7 +71,7 @@ class TestLibrary(unittest.TestCase):
         ]
         for error_input in error_inputs:
             with self.assertRaises((TypeError, AttributeError, ValueError), msg=error_input):
-                library.salt_password(error_input, iterations=2)
+                library.salt_password(error_input, salt, iterations=2)
 
 
     def test_is_password(self):
