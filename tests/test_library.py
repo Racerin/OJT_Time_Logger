@@ -267,3 +267,12 @@ class TestLibrary(unittest.TestCase):
         assert not os.path.exists(filename), "The file should not exist."
         # Test non-existence
         library.del_file(filename)
+        # Test bad inputs
+        error_inputs = [
+            (1, TypeError),
+            ([], TypeError),
+            ('', ValueError),
+        ]
+        for err_input, err in error_inputs:
+            with self.assertRaises(err, msg=err_input):
+                library.del_file(err_input)

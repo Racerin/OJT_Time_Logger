@@ -96,6 +96,8 @@ def has_whitespace(str1 : str) -> bool:
 
 def del_file(filename):
     """Delete file"""
+    if not bool(filename) and isinstance(filename, str):
+        raise ValueError("'del_file' cannot accept an empty string.")
     try:
         os.remove(filename)
     except FileNotFoundError:
