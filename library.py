@@ -7,6 +7,7 @@ __version__ = "0.1"
 __all__ = ["check_email"]
 
 
+import os
 import re
 import hashlib
 import sqlite3
@@ -89,3 +90,11 @@ def has_whitespace(str1 : str) -> bool:
     if not isinstance(str1, str):
         raise TypeError(f"Input '{str1}' must be of type 'str'.")
     return bool(re.search(r'\s', str1, ))
+
+
+def del_file(filename):
+    """Delete file"""
+    try:
+        os.remove(filename)
+    except FileNotFoundError:
+        pass
