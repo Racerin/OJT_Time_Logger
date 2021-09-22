@@ -149,13 +149,13 @@ class UserSettingsForm(flask_wtf.FlaskForm):
 
 
 @login_manager.user_loader
-def load_user(username_email) -> 'model.User':
+def load_user(user_id) -> 'model.User':
     """This callback is used to reload the user object
      from the user ID stored in the session.
     https://flask-login.readthedocs.io/en/latest/#how-it-works
     """
     #Get user in database
-    return model.User.DB.get_user_from_username_email(username_email)
+    return model.User.DB.get_user_from_id(user_id)
 
 
 @login_manager.unauthorized_handler
@@ -210,10 +210,12 @@ def login():
         remember_me = form.remember_me.data
         usr = model.User.DB.login(username_email, password)
         if usr:
+            print(usr, "This is user.")
             flask.flash("Valid user login.", "debug")
-            if flask_login.login_user(usr, remember=remember_me):
+            if flask_login.login_user(usr):#, remember=remember_me):
                 flask.flash("You have successfuly logged in.", 'info')
-                return flask.redirect( flask.url_for("home") )
+                # return flask.redirect( flask.url_for("home") )
+                return flask.redirect( flask.url_for('user.success') )
             else:
                 flask.flash(
                     "There was an error in logging in the user. \
@@ -222,6 +224,7 @@ def login():
                 return flask.redirect("/user/login")
         else:
             flask.flash("Incorrect login information. Please try again.", "error")
+            flask.flash("Incorrect login information. Please try again.", "login")
             return flask.redirect("/user/login")
     else:
         flask.flash("The form data is invalid.", 'debug')
@@ -279,5 +282,4 @@ def message(name):
 
 def init_app(app):
     """Instantiate packages/modules with app of instance."""
-    app.config["RECAPTCHA_PUBLIC_KEY"] = "-w0g968n-9eru0nb-0-098n-8"
     login_manager.init_app(app)
