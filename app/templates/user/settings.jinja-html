@@ -1,6 +1,6 @@
 {% extends "layout.jinja-html" %}
 {% block title %}User Settings{% endblock %}
-{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">{% endblock %}
+{% block css %}{{super()}}<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">{% endblock %}
 
 {% block body %}
 <h1>User Settings</h1>
