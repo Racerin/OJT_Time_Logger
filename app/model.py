@@ -76,7 +76,7 @@ class User(flask_login.UserMixin):
         """Wrapper function for granting access if is admin."""
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            usr = get_user()
+            usr = flask_login.current_user()
             if usr.is_admin:
                 return func(*args, **kwargs)
             else:

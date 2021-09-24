@@ -1,7 +1,7 @@
 
 
 import flask
-
+import flask_login
 import flask_wtf
 import wtforms
 
@@ -17,7 +17,8 @@ bp = flask.Blueprint('clocking', __name__, url_prefix='/clocking')
 
 class ClockForm():
     def __init__(self):
-        user_id = getattr(model.get_user(), 'user_id', None)
+        # user_id = getattr(model.get_user(), 'user_id', None)
+        user_id = getattr(flask_login.current_user, 'user_id', None)
         self.is_clocked_in = db.is_clocked_in(user_id)
         self.last_clock_in = db.last_clock_in(user_id)
 
