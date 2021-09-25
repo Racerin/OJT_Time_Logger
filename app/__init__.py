@@ -14,6 +14,7 @@ import tempfile
 import atexit
 
 import flask
+import click
 
 import PARAM
 import library
@@ -65,5 +66,18 @@ def create_app(test_config=False) -> flask.Flask:
     from . import clocking
     app.register_blueprint(clocking.bp)
     # clocking.init_app(app)
+
+    # Add local commands
+    app.cli.add_command(generate_secret_key_command)
     
     return app
+
+
+@click.command('gen-secret-key')
+@flask.cli.with_appcontext
+@click.argument("length", type=int, default=20)
+def generate_secret_key_command(length=20):
+    """Generate a secret key to use in flask."""
+    ans = os.urandom(length).hex()
+    print(ans)
+    # return 
