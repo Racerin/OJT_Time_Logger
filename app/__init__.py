@@ -48,6 +48,12 @@ def create_app(test_config=False) -> flask.Flask:
     if not app.config.from_pyfile('config.py', silent=True):
         app.logger.warning("'instance/config' could not be found.")
 
+    # Add jinja global variables
+    @app.context_processor
+    def add_PARAM():
+        """Adds PARAM constants to jinja template."""
+        return dict(IMG=PARAM.IMG)
+
     # Views
     # from . import views
     import app.views as temp_views
