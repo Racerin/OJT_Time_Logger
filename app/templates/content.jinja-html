@@ -1,0 +1,11 @@
+{% extends "layout.jinja-html" %}
+{% block title %}
+{{title|default(super())}}
+{% endblock title %}
+
+{% block body %}
+{% if title %}<h1 class="title">{{title}}</h1>
+{% if subtitle %}<h2 class="subtitle">{{subtitle}}</h2>{% endif %}
+{% endif %}
+<pre>{{content}}</pre>
+{% endblock body %}
