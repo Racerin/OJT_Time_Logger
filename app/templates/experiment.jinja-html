@@ -1,0 +1,15 @@
+{% extends 'layout.jinja-html' %}
+{% block title %}Experiment{% endblock title %}
+
+{% block body %}
+<h6 class="title">Title</h6>
+<h2 class="is-size-3">is-size-3</h2>
+<p class="has-text-weight-bold">has-text-weigth-bold</p>
+<section class="section">
+    <h2 class="is-size-2">Section with </h2>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat eos magni vel fuga ratione repellendus dignissimos dolorum ab. Temporibus explicabo blanditiis mollitia excepturi earum pariatur asperiores facilis. Quo perferendis id perspiciatis ducimus, distinctio quos repellat nam non? Eos amet explicabo harum earum soluta natus, temporibus qui rerum sequi quia!</p>
+</section>
+<section class="section">
+    <section class="container mx-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe dicta, beatae, enim sint ipsum exercitationem odio deserunt laboriosam omnis sunt molestias repellendus consectetur, assumenda cumque veritatis possimus nulla! Earum excepturi quos fuga? Provident at fugit facere natus, ipsum ullam corporis autem laudantium quo doloremque ducimus. Eaque vero perspiciatis excepturi odio!</section>
+</section>
+{% endblock body %}
