@@ -165,6 +165,21 @@ def unauthorized_handler():
     return flask.render_template(PARAM.HTML.UNAUTH)
 
 
+@bp.route("/")
+def home():
+    """Default view for user webpage."""
+    usr = flask_login.current_user
+    if usr.is_authenticated:
+        dict1 = dict(
+            title="User",
+            subtitle=usr.username,
+            content="Hey yawl.\n" + usr.__repr__(),
+        )
+    else:
+        dict1 = dict()
+    return flask.render_template(PARAM.HTML.CONTENT, **dict1)
+
+
 @bp.route("/reauthenticate")
 def reauthenticate():
     """If a user is still logged in with their cookies 
