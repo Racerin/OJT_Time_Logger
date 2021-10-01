@@ -1,5 +1,7 @@
 class HTML:
     HOME = "index.jinja-html"
+    EXPERIMENT="experiment.jinja-html"
+    CONTENT = "content.jinja-html"
     #user
     REGISTER = "/user/register.jinja-html"
     LOGIN = "user/login.jinja-html"
@@ -13,6 +15,10 @@ class HTML:
     #clocking
     CLOCKING = 'clocking/clocking.jinja-html'
     CLOCKING_EDIT = 'clocking/edit.jinja-html'
+
+class IMG:
+    LOGO = "images/logo.png"
+    dict1 = dict(LOGO=LOGO)
 
 class CONFIG:
     APP = "app.cfg"
