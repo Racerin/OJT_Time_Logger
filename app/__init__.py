@@ -12,6 +12,7 @@ import toml
 import os
 import tempfile
 import atexit
+import urllib.parse
 
 import flask
 import click
@@ -48,11 +49,30 @@ def create_app(test_config=False) -> flask.Flask:
     if not app.config.from_pyfile('config.py', silent=True):
         app.logger.warning("'instance/config' could not be found.")
 
-    # Add jinja global variables
+    # Add PARAM to jinja global variables
     @app.context_processor
-    def add_PARAM():
+    def add_PARAM() -> dict:
         """Adds PARAM constants to jinja template."""
         return dict(IMG=PARAM.IMG)
+
+    # Add breadcrumbs to jinja global variables
+    @app.context_processor
+    def add_breadcrumbs() -> dict:
+        """Create and return a dict containing a list of breadcrumbs."""
+        host_url = flask.request.host_url
+        path = flask.request.path
+        # Split path destinations
+        destinations = [s for s in os.path.split(path) if bool(s)]
+        n_destinations = len(destinations)
+        breadcrumbs = list()
+        for i in range(n_destinations):
+            # Accumulate-url-join each list of destinations to create sub-paths
+            sub_paths = destinations[:i+1]
+            sub_path = r'/'.join(sub_paths)
+            breadcrumb = urllib.parse.urljoin(host_url, sub_path)
+            breadcrumbs.append(breadcrumb)
+        return dict(breadcrumbs=breadcrumbs)
+
 
     # Views
     # from . import views
