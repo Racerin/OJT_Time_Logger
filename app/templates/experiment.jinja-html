@@ -2,14 +2,51 @@
 {% block title %}Experiment{% endblock title %}
 
 {% block body %}
-<h6 class="title">Title</h6>
-<h2 class="is-size-3">is-size-3</h2>
-<p class="has-text-weight-bold">has-text-weigth-bold</p>
 <section class="section">
-    <h2 class="is-size-2">Section with </h2>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat eos magni vel fuga ratione repellendus dignissimos dolorum ab. Temporibus explicabo blanditiis mollitia excepturi earum pariatur asperiores facilis. Quo perferendis id perspiciatis ducimus, distinctio quos repellat nam non? Eos amet explicabo harum earum soluta natus, temporibus qui rerum sequi quia!</p>
+    <h6 class="title">Title</h6>
+    <h2 class="is-size-3">is-size-3</h2>
+    <p class="has-text-weight-bold">has-text-weigth-bold</p>
+    <section class="section">
+        <h2 class="is-size-2">Section with </h2>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum quaerat eos magni vel fuga ratione repellendus dignissimos dolorum ab. Temporibus explicabo blanditiis mollitia excepturi earum pariatur asperiores facilis. Quo perferendis id perspiciatis ducimus, distinctio quos repellat nam non? Eos amet explicabo harum earum soluta natus, temporibus qui rerum sequi quia!</p>
+    </section>
+    <section class="section">
+        <section class="container mx-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe dicta, beatae, enim sint ipsum exercitationem odio deserunt laboriosam omnis sunt molestias repellendus consectetur, assumenda cumque veritatis possimus nulla! Earum excepturi quos fuga? Provident at fugit facere natus, ipsum ullam corporis autem laudantium quo doloremque ducimus. Eaque vero perspiciatis excepturi odio!</section>
+    </section>
 </section>
 <section class="section">
-    <section class="container mx-6">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe dicta, beatae, enim sint ipsum exercitationem odio deserunt laboriosam omnis sunt molestias repellendus consectetur, assumenda cumque veritatis possimus nulla! Earum excepturi quos fuga? Provident at fugit facere natus, ipsum ullam corporis autem laudantium quo doloremque ducimus. Eaque vero perspiciatis excepturi odio!</section>
+    <div class="message">
+        <div class="message-header">Popup (Modal)</div>
+        <div class="message-body">
+            <p>Opens a modal onto the screen. </p>
+            <br>
+            <!-- <hr> -->
+            <p>You will see the lyrics for 'Auld Lang Syne'.</p>
+            <button class="button" id='auld-button'>Click Me.</button>
+        </div>
+    </div>
 </section>
+<!-- Modal Content -->
+<div class="modal" id="auld">
+    <div class="modal-background is-outlined" id='auld-bg'></div>
+    <div class="modal-content">
+        <div class="message">
+        <div class="message-header">Auld Lang Syne</div>
+        <div class="message-content">
+            <pre class="">
+Should auld acquaintance be forgot
+And never brought to mind?
+Should auld acquaintance be forgot
+And days of auld lang syne?
+For auld lang syne, my dear
+For auld lang syne
+We'll tak a cup o' kindness yet
+For days of auld lang syne
+            </pre>
+        </div>
+        </div>
+    </div>
+    <div class="modal-close" aria-label="close"></div>
+</div>
+<script src="{{url_for('static', filename='js/experiment.js')}}"></script>
 {% endblock body %}
