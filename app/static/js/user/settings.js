@@ -14,7 +14,6 @@ tabs.forEach(tab => {
 
         // Set the content
         const target = tab.dataset.target;
-        console.log("This is the target", target);
         tabContents.forEach(tabContent => {
             // if (tabContent.getAttribute('id') == target){
             if (tabContent.id == target){
