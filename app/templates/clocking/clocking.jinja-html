@@ -2,17 +2,29 @@
 {% block title %}Clocking{% endblock %}
 
 {% block body %}
-{% if form.is_clocked_in %}
-{# Render Clocked-out page #}
-<h2 class="navbar-item">Clock out</h2><br>
-<p>Good day {{current_user.username}}. You clocked in at {{form.last_clock_in_nice()}}.</p>
-<form method="POST" action="{{url_for('clocking.clock_out')}}"><input type="submit" value="Clock-Out"></form>
-{% else %}
-{# Render Clocked-in page #}
-<h2 class="message-header">Clock In:</h2>
-<p class="message-header">Good day {{current_user.username}}. You are currently clocked-out. <br>
-Press the Button Below to clock in.
-</p>
-<form method="POST" action="{{url_for('clocking.clock_in')}}"><input type="submit" value="Clock-In"></form>
-{% endif %}
+<!-- Records -->
+<!-- <div class="column is-8 is-offset-one-fifth"> -->
+<div class="column is-8">
+    <div class="message">
+        <div class="message-header">Records</div>
+        <div class="message-body has-background-primary-light">
+            <p>Put each of the recent user's loggin history here.</p>
+        </div>
+    </div>
+<!-- Clock-in/clock-out -->
+    <div class="message">
+        <div class="message-body">
+            {% if form.is_clocked_in %}
+            {# Render Clocked-out page #}
+            <p>You clocked in at {{form.last_clock_in_nice()}}.</p>
+            <form method="POST" action="{{url_for('clocking.clock_out')}}"><input type="submit" value="Clock-Out"></form>
+            {% else %}
+            {# Render Clocked-in page #}
+            <p><b>You are currently clocked-out.</b></p>
+            <p>Press the Button Below to clock in.</p>
+            <form method="POST" action="{{url_for('clocking.clock_in')}}"><input type="submit" value="Clock-In"></form>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock body %}
