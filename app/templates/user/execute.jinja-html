@@ -3,23 +3,41 @@
 
 {% block body %}
 <!-- Warning message -->
-<pre style="color:crimson">
-N.B: Please be careful what you execute in the following textbox.
-There is no protection on the programming level.
-</pre>
-<!-- Form for execute input -->
-<form method='POST' action="{{url_for('user.execute')}}">
-    <label for='line'>Text:</label>
-    <input type="text" name='line'>
-    <input type='submit'>
-</form>
-<!-- Flash Message -->
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        <h2>Messages</h2>
-        {% for cat, msg in messages %}
-            <p>{{ cat.upper() }}: {{ msg }}</p>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+<section class="section">
+    <div class="column">
+        <!-- <pre style="color:crimson"> -->
+        <div class="message">
+            <div class="message-body">
+                <span class="is-warning" style="white-space: pre-line;">N.B: Please be careful what you execute in the following textbox.<br>There is no protection on the programming level.</span>
+            </div>
+        </div>
+        <!-- Form for execute input -->
+        <div class="message">
+            <form method='POST' action="{{url_for('user.execute')}}">
+            <div class="message-header">
+                <label class="label has-text-light" for='line'>Execute:</label>
+            </div>
+            <div class="message-body">
+                    <div class="field">
+                        <div class="control">
+                            <input type="text" name='line'><br>
+                            <div class="container has-text-right">
+                                <input type='submit' class="button">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Flash Message -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <h2>Messages</h2>
+                {% for cat, msg in messages %}
+                    <p>{{ cat.upper() }}: {{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</section>
 {% endblock body %}

@@ -8,60 +8,85 @@
     <title>{% block title %} OJT Timer Login {% endblock %}</title>
     {% block js %}{% endblock %}
     {% block css %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" /> -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/all.min.css')}}" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" />
     {% endblock %}
     
 </head>
 
 <body>
     <section class="hero is-primary is-fullheight">
-
         <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
-
-                    <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
-                            <a href="{{ url_for('home') }}" class="navbar-item">
-                                Home
-                            </a>
-                            {% if current_user %}
-                                {% if current_user.is_authenticated %}
-                                    <a href="{#{ url_for('user.settings') }#}" class="navbar-item">
-                                        Profile
-                                    </a>
-                                    <a href="{{ url_for('clocking.home') }}" class="navbar-item">
-                                        Clocking
-                                    </a>
-                                    <a href="{{ url_for('user.settings') }}" class="navbar-item">
-                                        Settings
-                                    </a>
-                                    <a href="{{ url_for('user.logout') }}" class="navbar-item">
-                                        Logout
-                                    </a>
-                                {% else %}
-                                    <a href="{{ url_for('user.register') }}" class="navbar-item">
-                                        Sign Up
-                                    </a>
-                                    <a href="{{ url_for('user.login') }}" class="navbar-item">
-                                        Login
-                                    </a>
-                                {% endif %}
-                            {% endif %}
-                        </div>
+            <!-- Main Navigation Bar -->
+            <nav class="navbar" style="height: 64px;" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <a href="{{url_for('home')}}" class="navbar-item">
+                        <!-- <figure class="image is-128x128"> -->
+                        <img class="has-size-7" src="{{url_for('static', filename='images/logo.png')}}" alt="my logo">
+                        <!-- </figure> -->
+                        <!-- <span class="icon"><i class="fas fa-home">Goat milk</i></span> -->
+                        <!-- <i class="fa fa-github">Noe milk</i> -->
+                    </a>
+                    <a class="navbar-burger" id="burger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </a>
+                </div>
+                <!-- <div class="navbar-menu" id="navbarMenuHeroA"> -->
+                <div class="navbar-menu" id="nav-links">
+                    <div class="navbar-end is-uppercase">
+                        <a class="navbar-item" href="{{ url_for('home') }}">Home</a>
+                        {% if current_user %}
+                        {% if current_user.is_authenticated %}
+                        <a href="{#{ url_for('user.settings') }#}" class="navbar-item">Profile</a>
+                        <a href="{{ url_for('clocking.home') }}" class="navbar-item">Clocking</a>
+                        <a href="{{ url_for('user.settings') }}" class="navbar-item">Settings</a>
+                        <a href="{{ url_for('user.logout') }}" class="navbar-item">Logout</a>
+                        {% else %}
+                        <a href="{{ url_for('user.register') }}" class="navbar-item">Sign Up</a>
+                        <a href="{{ url_for('user.login') }}" class="navbar-item">Login</a>
+                        {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </nav>
+            <!-- Title -->
+            <section class="section py-0">
+                <p class="title p-4">{{self.title()}}</p>
+            </section>
+            <!-- Breadcrumbs -->
+            <section class="section py-0">
+            {% if breadcrumbs|length > 1 %}
+            <div class="column">
+                <nav class="breadcrumb tag">
+                    <ul class="container">
+                        {% for crumb in breadcrumbs %}
+                        {% if crumb==breadcrumbs|last %}
+                        {% set li_class="is-active" %}
+                        {% else %}{% set li_class="" %}
+                        {% endif %}
+                        <li class='{{li_class}}'><a href="{{crumb}}">{{crumb.split('/')|last|title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+            </section>
         </div>
 
         <div class="hero-body">
-            <div class="container has-text-centered">
-               {% block body %}
-               {% endblock body %}
-            </div>
+            <!-- header -->
+            <!-- <section class="section"><div class="container">{% include "header.html" ignore missing %}</div></section> -->
+            <!-- Main Content Body -->
+            {% block body %}
+            {% endblock body %}
         </div>
+        <!-- footer -->
+        {% include "footer.html" ignore missing %}
     </section>
-    {% include "footer.html" ignore missing %}
+    <script src="{{url_for('static', filename='js/toggle-menu.js')}}"></script>
 </body>
 
 </html>

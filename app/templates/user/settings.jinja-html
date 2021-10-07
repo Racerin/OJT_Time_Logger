@@ -1,36 +1,61 @@
 {% extends "layout.jinja-html" %}
 {% block title %}User Settings{% endblock %}
-{% block css %}{{super()}}<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">{% endblock %}
+<!-- {% block css %}{{super()}}<link rel="stylesheet" href="{{ url_for('static', filename='css/user/settings.css') }}">{% endblock %} -->
 
 {% block body %}
-<h1>User Settings</h1>
-<form method="POST" action="{{ url_for('user.settings') }}">
-    {{ form.csrf_token }}
-    <hr>
-    <h3>Username</h3>
-    <div id='tab'>
-        <p>Change username:</p>
-        {{ form.new_username }}
-    </div>
-    <hr>
-    <h3>E-mail:</h3>
-    <p>To change e-mail</p>
-    <div id='tab'>
-        <p>Enter current e-mail:</p>
-        {{ form.current_email }}<br>
-        <p>Enter new e-mail:</p>
-        {{ form.new_email }}
-    </div>
-    <hr>
-    <h3>Password:</h3>
-    <p>To change password:</p>
-    <div id='tab'>
-        <p>Enter password:</p>
-        {{ form.current_password1 }}
-        <p>Enter password again:</p>
-        {{ form.current_password2 }}
-    </div>
-    <br>
-    <input type="submit">
-</form>
+<section class="section">
+    <form method="POST" action="{{ url_for('user.settings') }}">
+        {{ form.csrf_token }}
+        <div class="message">
+            <div class="message-header">
+                <h2 class="subtitle">Change:</h2>
+            </div>
+            <div class="message-body">
+                <div class="tabs is-boxed">
+                    <ul>
+                        <li  class="is-active" data-target="details">
+                            <a><span>Details</span></a>
+                        </li>
+                        <li data-target="username">
+                            <a><span>Username</span></a>
+                        </li>
+                        <li data-target="e-mail">
+                            <a><span>E-mail</span></a>
+                        </li>
+                        <li data-target="password">
+                            <a><span>Password</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- <div id="tab-content" style="display: block; height:170px;"> -->
+                <div id="tab-content" class="">
+                    <div id="details">
+                        <p>Random information to state on settings.</p>
+                    </div>
+                    <div id="username" class="is-hidden">
+                        <p>Change username:</p>
+                        {{ form.new_username }}
+                    </div>
+                    <div id="e-mail" class="is-hidden">
+                        <p>To change e-mail</p>
+                        {{ form.current_email }}<br>
+                        <p>Enter new e-mail</p>
+                        {{ form.new_email }}
+                    </div>
+                    <div id="password" class="is-hidden">
+                        <p class="is-size-5">To change password:</p>
+                        <p>Enter password:</p>
+                        {{ form.current_password1 }}
+                        <p>Enter password again:</p>
+                        {{ form.current_password2 }}
+                    </div>
+                </div>
+                <div class="container has-text-center">
+                    <input type="submit" class="button">
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+<script src="{{url_for('static', filename='js/user/settings.js')}}"></script>
 {% endblock %}

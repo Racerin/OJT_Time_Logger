@@ -1,8 +1,23 @@
 {% extends "layout.jinja-html" %}
-{% block title %} Home {% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
-    <h1>Welcome<h2>
-    <p>This is the homepage of my website.</p>
-
+<section class="section">
+    <div class="container">
+        <h2 class="title has-text-left">OJT Time Logger</h2>
+        <h2 class="subtitle">Welcome<h2>
+        <div class="column is-full">
+            <p>This is the homepage of my website.</p>
+            <div class="container">
+                <p>The aim of this website is to log an On-the-Job-Trainee's (<b>OJT</b>) log-in and log-out time.</p>
+            </div>
+        </div>
+        <div class="column is-full"></div>
+        <div class="column is-full is-vcentered">
+            <p class="is-italic box has-background-black has-text-light is-vcentered">
+                Contact Darnell Baird at drsbaird@yahoo.com for more information.
+            </p>
+        </div>
+    </div>
+</section>
 {% endblock %}
