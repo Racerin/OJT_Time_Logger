@@ -4,8 +4,19 @@
 {% endblock title %}
 
 {% block body %}
-{% if title %}<h1 class="title">{{title}}</h1>
-{% if subtitle %}<h2 class="subtitle">{{subtitle}}</h2>{% endif %}
-{% endif %}
-<pre>{{content}}</pre>
+{% for content in contents %}
+<div class="container">
+    <div class="message my-0">
+        {% if content.subtitle %} 
+        <div class="message-header">
+            {{content.subtitle}}
+        </div>
+        {% endif %}
+        <div class="message-body">
+            <span class="content" style="white-space: pre-line;">{{content.content}}</span>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 {% endblock body %}
