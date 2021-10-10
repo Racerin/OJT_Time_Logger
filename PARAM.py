@@ -31,3 +31,17 @@ class DATABASE:
 
 class CONSTANTS:
     SALT_ITERATIONS = int(1e6)
+
+class FORM:
+    USRNM_RNG = (2,60)
+    PW_RNG = (8,60)
+    VLDR_MSGS = {
+        'em_used':"E-mail already in use.",
+        'plz_val_em':"Please enter a valid e-mail address.",
+        'unm_l_rg':"Username must be between {} and {} characters long.",
+        'pw_l_rg':"Password must be between {} and {} characters long.",
+        'pw_match':"Passwords must match.",
+        'em_match':"E-mail must match.",
+        'unm_no_wht_spc':"Username cannot contain any whitespace.",
+        'pw_d_w_s':"Password requires atleast a number, letter and symbol.",
+    }
