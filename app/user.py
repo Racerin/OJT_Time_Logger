@@ -169,15 +169,14 @@ def unauthorized_handler():
 def home():
     """Default view for user webpage."""
     usr = flask_login.current_user
+    contents = list()
     if usr.is_authenticated:
-        dict1 = dict(
-            title="User",
-            subtitle=usr.username,
-            content="Hey yawl.\n" + usr.__repr__(),
-        )
+        content = "Hey yawl.\n" + usr.__repr__()
+        dict1 = dict(title="User", subtitle=usr.username, content=content)
+        contents.append(dict1)
     else:
         dict1 = dict()
-    return flask.render_template(PARAM.HTML.CONTENT, **dict1)
+    return flask.render_template(PARAM.HTML.CONTENT, contents=contents)
 
 
 @bp.route("/reauthenticate")
