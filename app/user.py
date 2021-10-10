@@ -47,34 +47,19 @@ class UserLoginForm(flask_wtf.FlaskForm):
 
 class UserRegisterForm(flask_wtf.FlaskForm):
 
-    _vldr_msgs = {
-        'em_used':"E-mail already in use.",
-        'plz_val_em':"Please enter a valid e-mail address.",
-        'unm_l_rg':"Username must be between {} and {} characters long.",
-        'pw_l_rg':"Password must be between {} and {} characters long.",
-        'pw_match':"Passwords must match.",
-        'unm_no_wht_spc':"Username cannot contain any whitespace.",
-        'pw_d_w_s':"Password requires atleast a number, letter and symbol.",
-    }
-
-    _usrnm_range = (2,60)
-    _pw_range = (8,60)
+    # CONSTANTS MOVED TO 'PARAM'
 
     username = wtforms.StringField(
         label="Username: ",
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.Length(
-                min=_usrnm_range[0], 
-                max=_usrnm_range[1],
-                message=
-                _vldr_msgs["unm_l_rg"].format(*_usrnm_range)
+                min=PARAM.FORM.USRNM_RNG[0], 
+                max=PARAM.FORM.USRNM_RNG[1],
+                message=PARAM.FORM.VLDR_MSGS["unm_l_rg"].format(*PARAM.FORM.USRNM_RNG)
                 ),
         ]
     )
-    """ email = wtforms.fields.html5.Email(
-        label='E-mail: ',
-    ) """
     email = wtforms.StringField(
         label='E-mail: ',
         validators=[
@@ -87,9 +72,9 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.Length(
-                min=_pw_range[0], 
-                max=_pw_range[1], 
-                message=_vldr_msgs['pw_l_rg'].format(*_pw_range)
+                min=PARAM.FORM.PW_RNG[0], 
+                max=PARAM.FORM.PW_RNG[1], 
+                message=PARAM.FORM.VLDR_MSGS['pw_l_rg'].format(*PARAM.FORM.PW_RNG)
                 ),
         ]
     )
@@ -98,7 +83,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.EqualTo(
-                'password1', message=_vldr_msgs['pw_match']
+                'password1', message=PARAM.FORM.VLDR_MSGS['pw_match']
                 )
         ]
     )
@@ -110,7 +95,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         No whitespace in username.
         """
         if library.has_whitespace(field.data):
-            raise wtforms.validators.ValidationError(self._vldr_msgs['unm_no_wht_spc'])
+            raise wtforms.validators.ValidationError(PARAM.FORM.VLDR_MSGS['unm_no_wht_spc'])
 
     def validate_email(self, field : wtforms.fields.Field):
         """A special method automatically called when
@@ -119,9 +104,9 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         User/email exists.
         """
         if not library.is_email(field.data):
-            raise wtforms.validators.ValidationError(self._vldr_msgs["plz_val_em"])
+            raise wtforms.validators.ValidationError(PARAM.FORM.VLDR_MSGS["plz_val_em"])
         if model.User.DB.email_exists(field.data):
-            raise wtforms.validators.ValidationError(self._vldr_msgs['em_used'])
+            raise wtforms.validators.ValidationError(PARAM.FORM.VLDR_MSGS['em_used'])
 
     def validate_password1(self, field : wtforms.Field):
         """A special method automatically called when
@@ -130,7 +115,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         """
         bools = [f(field.data) for f in [library.has_digit, library.has_letter, library.has_symbol]]
         if not all(bools):
-            raise wtforms.validators.ValidationError(self._vldr_msgs['pw_d_l_s'])
+            raise wtforms.validators.ValidationError(PARAM.FORM.VLDR_MSGS['pw_d_l_s'])
         # if not library.has_digit(field.data):
         #     raise wtforms.validators.ValidationError("Password requires a digit.")
         # if not library.has_letter(field.data):
@@ -139,13 +124,67 @@ class UserRegisterForm(flask_wtf.FlaskForm):
         #     raise wtforms.validators.ValidationError("Password requires a punctuation.")
 
 
+# CHECK THIS FORM COMPILATION NEXT TIME
+# https://dev.to/sampart/combining-multiple-forms-in-flask-wtforms-but-validating-independently-cbm
 
-class UserSettingsForm(flask_wtf.FlaskForm):
-    new_username = wtforms.StringField()
-    current_email = wtforms.StringField()
-    new_email = wtforms.StringField()
-    current_password1 = wtforms.PasswordField()
-    current_password2 = wtforms.PasswordField()
+
+class UserSettingsUsernameForm(flask_wtf.FlaskForm):
+    new_username = wtforms.StringField(
+        label="Enter Username:",
+        validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.Length(
+                min=PARAM.FORM.USRNM_RNG[0],
+                max=PARAM.FORM.USRNM_RNG[1],
+                message=PARAM.FORM.VLDR_MSGS['unm_l_rg'].format(*PARAM.FORM.USRNM_RNG)
+            )
+        ],
+    )
+
+
+class UserSettingsEmailForm(flask_wtf.FlaskForm):
+    current_email = wtforms.StringField(
+        label="Enter E-mail:",
+        validators=[
+        wtforms.validators.DataRequired(),
+        wtforms.validators.Length(
+            min=PARAM.FORM.USRNM_RNG[0],
+            max=PARAM.FORM.USRNM_RNG[1],
+            message=PARAM.FORM.VLDR_MSGS["unm_l_rg"].format(*PARAM.FORM.USRNM_RNG)
+        ),
+        ]
+    )
+    new_email = wtforms.StringField(
+        label="Enter new E-mail:",
+        validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.EqualTo(
+                'current_email', message=PARAM.FORM.VLDR_MSGS['em_match']
+            ),
+        ],
+    )
+
+
+class UserSettingsPasswordForm(flask_wtf.FlaskForm):
+    current_password1 = wtforms.PasswordField(
+        label="Enter Password:",
+        validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.Length(
+                min=PARAM.FORM.PW_RNG[0],
+                max=PARAM.FORM.PW_RNG[1],
+            ),
+        ],
+    )
+    current_password2 = wtforms.PasswordField(
+        label='Enter Password:',
+        validators=[
+            wtforms.validators.DataRequired(),
+            wtforms.validators.EqualTo(
+                'current_password1', message=PARAM.FORM.VLDR_MSGS['pw_match']
+            )
+        ]
+    )
 
 
 @login_manager.user_loader
@@ -263,12 +302,30 @@ def logout():
 @flask_login.login_required
 @login_manager.needs_refresh_handler
 def settings():
-    form = UserSettingsForm()
+    form_username = UserSettingsUsernameForm()
+    form_email = UserSettingsEmailForm()
+    form_password = UserSettingsPasswordForm()
     if flask.request.method == "POST":
         #Save the user Settings
+        if form_username.validate_on_submit():
+            # Change username
+            flask.current_app.logger.debug("Will change current user username")
+        if form_email.validate_on_submit():
+            # Change email
+            flask.current_app.logger.debug("Will change current user email")
+        if form_password.validate_on_submit():
+            # Change password
+            flask.current_app.logger.debug("Will change current user password")
+        flask.current_app.logger.debug("Will change something of the user.")
+        # Return to home
         flask.redirect( flask.url_for('home') )
     #Return users settings page
-    return flask.render_template(PARAM.HTML.SETTINGS, form=form)
+    return flask.render_template(
+        PARAM.HTML.SETTINGS, 
+        form_username=form_username,
+        form_email=form_email,
+        form_password=form_password,
+        )
 
 
 @bp.route("/status")

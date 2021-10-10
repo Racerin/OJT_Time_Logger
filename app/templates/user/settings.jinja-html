@@ -4,58 +4,78 @@
 
 {% block body %}
 <section class="section">
-    <form method="POST" action="{{ url_for('user.settings') }}">
-        {{ form.csrf_token }}
-        <div class="message">
-            <div class="message-header">
-                <h2 class="subtitle">Change:</h2>
+    <div class="message">
+        <div class="message-header">
+            <h2 class="subtitle">Change:</h2>
+        </div>
+        <div class="message-body">
+            <div class="tabs is-boxed">
+                <ul>
+                    <li  class="is-active" data-target="details">
+                        <a><span>Details</span></a>
+                    </li>
+                    <li data-target="username">
+                        <a><span>Username</span></a>
+                    </li>
+                    <li data-target="e-mail">
+                        <a><span>E-mail</span></a>
+                    </li>
+                    <li data-target="password">
+                        <a><span>Password</span></a>
+                    </li>
+                </ul>
             </div>
-            <div class="message-body">
-                <div class="tabs is-boxed">
-                    <ul>
-                        <li  class="is-active" data-target="details">
-                            <a><span>Details</span></a>
-                        </li>
-                        <li data-target="username">
-                            <a><span>Username</span></a>
-                        </li>
-                        <li data-target="e-mail">
-                            <a><span>E-mail</span></a>
-                        </li>
-                        <li data-target="password">
-                            <a><span>Password</span></a>
-                        </li>
-                    </ul>
+            <!-- <div id="tab-content" style="display: block; height:170px;"> -->
+            <div id="tab-content" class="">
+                <!-- Details -->
+                <div id="details">
+                    <p>Random information to state on settings.</p>
                 </div>
-                <!-- <div id="tab-content" style="display: block; height:170px;"> -->
-                <div id="tab-content" class="">
-                    <div id="details">
-                        <p>Random information to state on settings.</p>
-                    </div>
-                    <div id="username" class="is-hidden">
-                        <p>Change username:</p>
-                        {{ form.new_username }}
-                    </div>
-                    <div id="e-mail" class="is-hidden">
+                <!-- Username -->
+                <div id="username" class="is-hidden">
+                    <form method="POST" action="{{ url_for('user.settings') }}">
+                        {{ form_username.csrf_token }}
+                        <p class="is-size-5">Change username:</p>
+                        <br>
+                        {{ form_username.new_username }}
+                        <div class="container has-text-center">
+                            <input type="submit" class="button">
+                        </div>
+                    </form>
+                </div>
+                <!-- E-mail -->
+                <div id="e-mail" class="is-hidden">
+                    <form method="POST" action="{{ url_for('user.settings') }}">
+                        {{ form_email.csrf_token }}
+                        <p class="is-size-5">E-mail:</p>
+                        <br>
                         <p>To change e-mail</p>
-                        {{ form.current_email }}<br>
+                        {{ form_email.current_email }}<br>
                         <p>Enter new e-mail</p>
-                        {{ form.new_email }}
-                    </div>
-                    <div id="password" class="is-hidden">
-                        <p class="is-size-5">To change password:</p>
-                        <p>Enter password:</p>
-                        {{ form.current_password1 }}
-                        <p>Enter password again:</p>
-                        {{ form.current_password2 }}
-                    </div>
+                        {{ form_email.new_email }}
+                        <div class="container has-text-center">
+                            <input type="submit" class="button">
+                        </div>
+                    </form>
                 </div>
-                <div class="container has-text-center">
-                    <input type="submit" class="button">
+                <!-- Password -->
+                <div id="password" class="is-hidden">
+                    <form method="POST" action="{{ url_for('user.settings') }}">
+                        {{ form_password.csrf_token }}
+                        <p class="is-size-5">To change password:</p>
+                        <br>
+                        <p>Enter password:</p>
+                        {{ form_password.current_password1 }}
+                        <p>Enter password again:</p>
+                        {{ form_password.current_password2 }}
+                        <div class="container has-text-center">
+                            <input type="submit" class="button">
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </section>
 <script src="{{url_for('static', filename='js/user/settings.js')}}"></script>
 {% endblock %}
