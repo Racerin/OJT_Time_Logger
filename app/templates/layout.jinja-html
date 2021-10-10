@@ -24,10 +24,12 @@
                 <div class="navbar-brand">
                     <a href="{{url_for('home')}}" class="navbar-item">
                         <!-- <figure class="image is-128x128"> -->
-                        <img class="has-size-7" src="{{url_for('static', filename='images/logo.png')}}" alt="my logo">
-                        <!-- </figure> -->
-                        <!-- <span class="icon"><i class="fas fa-home">Goat milk</i></span> -->
-                        <!-- <i class="fa fa-github">Noe milk</i> -->
+                        <figure>
+                            <img class="has-size-7" src="{{url_for('static', filename='images/logo.png')}}" alt="my logo">
+                        </figure>
+                        <span class="icon">
+                            <i class="fa fa-home"></i>
+                        </span>
                     </a>
                     <a class="navbar-burger" id="burger">
                         <span></span>
