@@ -33,7 +33,7 @@
                 </div>
                 <!-- Username -->
                 <div id="username" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}">
+                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
                         {{ form_username.csrf_token }}
                         <p class="is-size-5">Change username:</p>
                         <br>
@@ -45,7 +45,7 @@
                 </div>
                 <!-- E-mail -->
                 <div id="e-mail" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}">
+                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
                         {{ form_email.csrf_token }}
                         <p class="is-size-5">E-mail:</p>
                         <br>
@@ -60,7 +60,7 @@
                 </div>
                 <!-- Password -->
                 <div id="password" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}">
+                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
                         {{ form_password.csrf_token }}
                         <p class="is-size-5">To change password:</p>
                         <br>
