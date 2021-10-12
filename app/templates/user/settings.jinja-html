@@ -39,7 +39,7 @@
                         <br>
                         {{ form_username.new_username }}
                         <div class="container has-text-center">
-                            <input type="submit" class="button">
+                            <input type="submit" class="button" name="submit_username">
                         </div>
                     </form>
                 </div>
@@ -49,12 +49,12 @@
                         {{ form_email.csrf_token }}
                         <p class="is-size-5">E-mail:</p>
                         <br>
-                        <p>To change e-mail</p>
+                        <p>Enter original email:</p>
                         {{ form_email.current_email }}<br>
                         <p>Enter new e-mail</p>
                         {{ form_email.new_email }}
                         <div class="container has-text-center">
-                            <input type="submit" class="button">
+                            <input type="submit" class="button" name="submit_email">
                         </div>
                     </form>
                 </div>
@@ -69,7 +69,7 @@
                         <p>Enter password again:</p>
                         {{ form_password.current_password2 }}
                         <div class="container has-text-center">
-                            <input type="submit" class="button">
+                            <input type="submit" class="button" name="submit_password">
                         </div>
                     </form>
                 </div>

@@ -206,6 +206,50 @@ class User(flask_login.UserMixin):
             conn.commit()
 
         @classmethod
+        def _change_attribute(cls, atrbt, user_id, new_value) -> bool:
+            """Change attribute  of user with user_id to value 'new_value'.
+            Contains magic for password.
+            Untested.
+            """
+            print("PASSSSS")
+            # Salt the password. 'password' filter magic.
+            if atrbt.strip() == 'password':
+                new_value = DB.salt_password(new_value)
+                atrbt = 'salt_password'
+            sql = f"""
+            UPDATE Users
+            SET {atrbt} = ?
+            WHERE user_id = ?
+            LIMIT 1;"""
+            values = (new_value, user_id)
+            db = cls.get_db()
+            try:
+                db.execute(sql, values)
+                db.commit()
+            except sqlite3.Error as err:
+                flask.current_app.logger.error(f"This is the sqlite error:\n {err}")
+                return False
+            return True
+
+        @classmethod
+        def change_username(cls, user_id : int, new_username : str) -> bool:
+            """Change username to 'new_username' of user with user_id 'user_id'.
+            """
+            return cls._change_attribute('username', user_id, new_username)
+
+        @classmethod
+        def change_email(cls, user_id : int, new_email : str) -> bool:
+            """Change email to 'new_email' of user with user_id 'user_id'."""
+            print("DOG")
+            return cls._change_attribute('email', user_id, new_email)
+
+        @classmethod
+        def change_password(cls, user_id : int, new_password : str) -> bool:
+            """Change password to 'new_password' of user with user_id 'user_id'.
+            """
+            return cls._change_attribute('password', user_id, new_password)
+
+        @classmethod
         def clear_users(cls, delete_admin=False):
             if delete_admin:
                 sql = "DELETE FROM Users;"

@@ -305,18 +305,32 @@ def settings():
     form_username = UserSettingsUsernameForm()
     form_email = UserSettingsEmailForm()
     form_password = UserSettingsPasswordForm()
+    # https://stackoverflow.com/a/46105336/6556801
     if flask.request.method == "POST":
+        usr = flask_login.current_user
+        user_id = usr.user_id
         #Save the user Settings
-        if form_username.validate_on_submit():
+        if "submit_username" in flask.request.form:
             # Change username
             flask.current_app.logger.debug("Will change current user username")
-        if form_email.validate_on_submit():
+            new_username = form_username.new_username.data
+            if model.User.DB.change_username(user_id, new_username):
+                #Change current user's username
+                usr.username = new_username
+        elif "submit_email" in flask.request.form:
             # Change email
             flask.current_app.logger.debug("Will change current user email")
-        if form_password.validate_on_submit():
+            new_email = form_email.new_email.data
+            if usr.email == form_email.current_email.data:
+                # Verify current e-mail
+                if model.User.DB.change_email(user_id, new_email):
+                    #Change current user's email
+                    usr.email = new_email
+        elif "submit_password" in flask.request.form:
             # Change password
             flask.current_app.logger.debug("Will change current user password")
-        flask.current_app.logger.debug("Will change something of the user.")
+            new_password = form_password.new_password.data
+            model.User.DB.change_password(user_id, new_password)
         # Return to home
         flask.redirect( flask.url_for('home') )
     #Return users settings page
