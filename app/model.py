@@ -211,7 +211,6 @@ class User(flask_login.UserMixin):
             Contains magic for password.
             Untested.
             """
-            print("PASSSSS")
             # Salt the password. 'password' filter magic.
             if atrbt.strip() == 'password':
                 new_value = DB.salt_password(new_value)
@@ -240,7 +239,6 @@ class User(flask_login.UserMixin):
         @classmethod
         def change_email(cls, user_id : int, new_email : str) -> bool:
             """Change email to 'new_email' of user with user_id 'user_id'."""
-            print("DOG")
             return cls._change_attribute('email', user_id, new_email)
 
         @classmethod
