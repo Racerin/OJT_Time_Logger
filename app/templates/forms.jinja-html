@@ -1,0 +1,40 @@
+{# https://stackoverflow.com/a/29773302 #}
+
+
+{% macro fieldType2htmlInputType2(field) -%}
+{% if field.type == "Boolean" %}checkbox
+{% elif field.type == "SubmitField" %}submit
+{% elif field.type == "StringField" %}text
+{% elif field.type == "HiddenField" %}hidden
+{% elif field.type == "PasswordField" %}password
+{% elif field.type == "DateField" %}date
+{% elif field.type == "DateTimeField" %}datetime-local
+{% elif field.type == "RadioField" %}radio
+{% else %}text
+{%- endif %}
+{%- endmacro %}
+
+
+{% macro render_field(field, placeholder="") -%}
+
+{% if field.type == 'CSRFTokenField' %}
+    {{field}}
+    {% if field.errors %}
+        <div class="warning">You have submitted an invalid CSRF token</div>
+    {% endif %}
+{% elif field.type == 'HiddenField' %}
+    {{field}}
+{# any other special case you may need #}
+{% else %}
+    {# Assistance: https://wtforms.readthedocs.io/en/2.3.x/fields/#wtforms.fields.Field #}
+
+    <div class="field">
+        <label for="{{ field.name }}" class="label">{{field.label.text}}</label>
+        <div class="control">
+            <input name="{{field.name}}" id="{{field.id}}" type="{{field.widget.input_type}}" class="input" placeholder="{{placeholder}}" {% if field.default %}value="y"{% endif %}>
+        </div>
+    </div>
+{% endif %}
+
+{%- endmacro %}
+
