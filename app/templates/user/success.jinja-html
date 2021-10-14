@@ -1,10 +1,12 @@
 {% extends 'layout.jinja-html' %}
-{% block title %}Success!!{% endblock title %}
+{% import 'my templates.jinja-html' as mt %}
+{% block title %}Success!!!{% endblock title %}
 
-{% block body %}
-<h2>Success</h2>
-<p>
-    {{ statement }}
-</p>
-{#<p>You are logged in as {{session['user'].username}}.</p> #}
-{% endblock body %}
+{% block body -%}
+<div class="hero-body is-info">
+    <div class="container">
+        <p class="title">Success</p><br>
+        <p class="subtitle">Successfully login.</p>
+    </div>
+</div>
+{%- endblock body %}
