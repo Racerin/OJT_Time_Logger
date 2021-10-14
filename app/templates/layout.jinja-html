@@ -55,37 +55,10 @@
                     </div>
                 </div>
             </nav>
-            <!-- Title -->
-            <section class="section py-0">
-                <p class="title p-4">{{self.title()}}</p>
-            </section>
-            <!-- Breadcrumbs -->
-            <section class="section py-0">
-            {% if breadcrumbs|length > 1 %}
-            <div class="column">
-                <nav class="breadcrumb tag">
-                    <ul class="container">
-                        {% for crumb in breadcrumbs %}
-                        {% if crumb==breadcrumbs|last %}
-                        {% set li_class="is-active" %}
-                        {% else %}{% set li_class="" %}
-                        {% endif %}
-                        <li class='{{li_class}}'><a href="{{crumb}}">{{crumb.split('/')|last|title}}</a></li>
-                        {% endfor %}
-                    </ul>
-                </nav>
-            </div>
-            {% endif %}
-            </section>
         </div>
-
-        <div class="hero-body">
-            <!-- header -->
-            <!-- <section class="section"><div class="container">{% include "header.html" ignore missing %}</div></section> -->
-            <!-- Main Content Body -->
-            {% block body %}
-            {% endblock body %}
-        </div>
+        <!-- Body -->
+        {% block body %}
+        {% endblock body %}
         <!-- footer -->
         {% include "footer.html" ignore missing %}
     </section>
