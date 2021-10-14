@@ -20,6 +20,7 @@
     <section class="hero is-primary is-fullheight">
         <div class="hero-head">
             <!-- Main Navigation Bar -->
+            {% block nav -%}
             <nav class="navbar" style="height: 64px;" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
                     <a href="{{url_for('home')}}" class="navbar-item">
@@ -55,6 +56,7 @@
                     </div>
                 </div>
             </nav>
+            {%- endblock nav %}
         </div>
         <!-- Body -->
         {% block body %}
