@@ -4,11 +4,14 @@
 {% block body %}
 <!-- Warning message -->
 <section class="section">
-    <div class="column">
-        <!-- <pre style="color:crimson"> -->
-        <div class="message">
+    <div class="container mx-0">
+        <div class="message is-warning is-small">
+            <div class="message-header">Warning</div>
             <div class="message-body">
-                <span class="is-warning" style="white-space: pre-line;">N.B: Please be careful what you execute in the following textbox.<br>There is no protection on the programming level.</span>
+                <span>
+                    N.B: Please be careful what you execute in the following textbox.<br>
+                    There is no protection/escaping of the following text.
+                </span>
             </div>
         </div>
         <!-- Form for execute input -->
@@ -19,11 +22,14 @@
             </div>
             <div class="message-body">
                     <div class="field">
+                        <div class="control has-icons-right">
+                            <label for="exe" class="label">Execute code below:</label>
+                            <input id="exe" class="input" type="text" name='line'><br>
+                            <span class="icon is-small is-right"><i class="fa fa-check"></i></span>
+                        </div>
+                        <br>
                         <div class="control">
-                            <input type="text" name='line'><br>
-                            <div class="container has-text-right">
-                                <input type='submit' class="button">
-                            </div>
+                            <input class="button" type='submit' class="button">
                         </div>
                     </div>
                 </div>
