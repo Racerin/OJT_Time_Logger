@@ -1,10 +1,27 @@
 {% extends "layout.jinja-html" %}
+{% import 'my templates.jinja-html' as mt %}
 {% block title %}Python Terminal:{% endblock title %}
 
 {% block body %}
-<!-- Warning message -->
+<!-- Breadcrumb -->
+{% include 'breadcrumb.jinja-html' ignore missing %}
+<!-- Title -->
+{{mt.titleHeader("Execute Line of Code")}}
 <section class="section">
     <div class="container mx-0">
+        <!-- Information message -->
+        <div class="message is-info is-small">
+            <div class="message-header">Info:</div>
+            <div class="message-body">
+                <div class="content">
+                    <ul>
+                        <li>The command line at the bottom of the page allows for execution of Python 3.7 code.</li>
+                        <li>Code to your heart's content.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Warning message -->
         <div class="message is-warning is-small">
             <div class="message-header">Warning</div>
             <div class="message-body">
