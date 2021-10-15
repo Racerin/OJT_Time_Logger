@@ -1,35 +1,62 @@
+{% import 'forms.jinja-html' as template_form %}
 {% extends "layout.jinja-html" %}
 {% block title %}Login{% endblock %}
 
 {% block body %}
-<h2 class='subtitle'>Login</h2>
-{% if current_user %}
-    {% if current_user.is_authenticated %}
-        <p style="color:red">
-            A user is already logged in. <br>
-            Logout by clicking <a href='{{ url_for("user.logout") }}'>here</a>.
-        </p>
-    {% else %}
-        <form method="POST" action="">
-            {{ form.csrf_token }}
-            {#<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>#}
-            {{ form.username_email.label }}<br>
-            {{ form.username_email }}<br><br>
-            {{ form.password.label }}<br>
-            {{ form.password }}<br><br>
-            {{ form.remember_me.label }}<br>
-            {{ form.remember_me }}<br><br>
-            <input type="submit" value="Submit">
-        </form>
-    {% endif %}
-{% endif %}
-{% with messages = get_flashed_messages(category_filter=['login']) %}
-{% if messages %}
-<ul>
-    {% for msg in messages %}
-    <li>{{msg}}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+<section class="section">
+    <div class="columns">
+        <div class="column">
+            {% if current_user %}
+                {% if current_user.is_authenticated %}
+                <div class="message">
+                    <div class="message-header"><span class="is-large">Currently Logged in</span></div>
+                    <div class="message-body">
+                        <p>A user is already logged in. <br>
+                            Logout by clicking <a href='{{ url_for("user.logout") }}'>here</a>.
+                        </p>
+                    </div>
+                </div>
+                {% else %}
+                <form method="POST" action="">
+                    {{ form.csrf_token }}
+                    <div class="field">
+                        {{ form.username_email.label(class="label") }}
+                        <div class="control has-icons-left has-icons-right">
+                            {{ form.username_email(placeholder="John Doe", class="input is-success") }}<br>
+                            <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+                            <span class="icon is-small is-right"><i class="fa fa-check"></i></span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        {{ form.password.label(class="label") }}
+                        <div class="control has-icons-left has-icons-right">
+                            {{ form.password(class="input is-link") }}<br>
+                            <span class="icon is-small is-left"><i class="fa fa-key"></i></span>
+                            <span class="icon is-small is-right"><i class="fa fa-check"></i></span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        {{ form.remember_me.label(class="label") }}
+                        <div class="control">
+                            {{ form.remember_me(class="checkbox") }}
+                        </div>
+                    </div>
+                    <div class="control">
+                        <input class="button" type="submit" value="Submit">
+                    </div>
+                </form>
+                {% endif %}
+            {% endif %}
+            {% with messages = get_flashed_messages(category_filter=['login']) %}
+            {% if messages %}
+            <ul>
+                {% for msg in messages %}
+                <li>{{msg}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</section>
 {% endblock %}
