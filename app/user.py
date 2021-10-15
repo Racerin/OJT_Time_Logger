@@ -130,7 +130,7 @@ class UserRegisterForm(flask_wtf.FlaskForm):
 
 class UserSettingsUsernameForm(flask_wtf.FlaskForm):
     new_username = wtforms.StringField(
-        label="Enter Username:",
+        label="Change Username:",
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.Length(
@@ -166,8 +166,8 @@ class UserSettingsEmailForm(flask_wtf.FlaskForm):
 
 
 class UserSettingsPasswordForm(flask_wtf.FlaskForm):
-    current_password1 = wtforms.PasswordField(
-        label="Enter Password:",
+    new_password1 = wtforms.PasswordField(
+        label="Enter a new Password:",
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.Length(
@@ -176,12 +176,12 @@ class UserSettingsPasswordForm(flask_wtf.FlaskForm):
             ),
         ],
     )
-    current_password2 = wtforms.PasswordField(
-        label='Enter Password:',
+    new_password2 = wtforms.PasswordField(
+        label='Enter new password again:',
         validators=[
             wtforms.validators.DataRequired(),
             wtforms.validators.EqualTo(
-                'current_password1', message=PARAM.FORM.VLDR_MSGS['pw_match']
+                'new_password1', message=PARAM.FORM.VLDR_MSGS['pw_match']
             )
         ]
     )
@@ -265,7 +265,7 @@ def login():
         if usr:
             print(usr, "This is user.")
             flask.flash("Valid user login.", "debug")
-            if flask_login.login_user(usr):#, remember=remember_me):
+            if flask_login.login_user(usr, remember=remember_me):
                 flask.flash("You have successfuly logged in.", 'info')
                 # return flask.redirect( flask.url_for("home") )
                 return flask.redirect( flask.url_for('user.success') )
