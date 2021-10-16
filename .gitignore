@@ -1,6 +1,7 @@
 venv
 /instance
 /*.db
+.env
 
 #vscode
 settings.json
