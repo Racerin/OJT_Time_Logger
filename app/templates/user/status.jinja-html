@@ -1,79 +1,81 @@
 {% extends 'layout.jinja-html' %}
 {% block title %}Status{% endblock title %}
 
-{% block Title %}Status{% endblock Title %}
 {% block body %}
-    <section class="section">
-        <h1 class="title">Status</h1>
-        <h2 class="subtitle">Contains information useful for debugging.</h2>
-    </section>
-    <section class="section">
-        <!-- User -->
-        <div class="message">
-            <div class="message-header">User:</div>
-            <div class="message-body">
-                {% if current_user %}
-                    <p>
-                    {% if current_user.is_authenticated %}
-                        User is authenticated.<br>
-                    {% else %}
-                        User is not authenticated
-                    {% endif %}
-                    {{ current_user }}
-                    </p>
-                {% endif %}<br>
-            </div>
+<!-- Breadcrumb -->
+{% include 'breadcrumb.jinja-html' ignore missing %}
+<!-- Title -->
+<section class="section pt-0">
+    <h1 class="title">Status</h1>
+    <h2 class="subtitle">Contains information useful for debugging.</h2>
+</section>
+<section class="section">
+    <!-- User -->
+    <div class="message">
+        <div class="message-header">User:</div>
+        <div class="message-body">
+            {% if current_user %}
+                <p>
+                {% if current_user.is_authenticated %}
+                    User is authenticated.<br>
+                {% else %}
+                    User is not authenticated
+                {% endif %}
+                {{ current_user }}
+                </p>
+            {% endif %}<br>
         </div>
-        <!-- Session -->
-        <div class="message">
-            <div class="message-header">Session:</div>
-            <div class="message-body">
-                {% if session %}
-                    <p>
-                        {% for key,val in session.items() %}
-                            {{key}}: {{value}}<br>
-                        {% endfor %}
-                        {% for key in ['new', 'modified', 'permanent'] %}
-                            {{key}}: {{session[key]}}<br>
-                        {% endfor %}
-                    </p>
-                {% endif %}<br>
-            </div>
+    </div>
+    <!-- Session -->
+    <div class="message">
+        <div class="message-header">Session:</div>
+        <div class="message-body">
+            {% if session %}
+                <p>
+                    {% for key,val in session.items() %}
+                        {{key}}: {{value}}<br>
+                    {% endfor %}
+                    {% for key in ['new', 'modified', 'permanent'] %}
+                        {{key}}: {{session[key]}}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}<br>
         </div>
-        <!-- Request -->
-        <div class="message">
-            <div class="message-header">Request:</div>
-            <div class="message-body">
-                {% if request %}
-                    <p>{{request.data}}</p>
-                {% endif %}<br>
-            </div>
+    </div>
+    <!-- Request -->
+    <div class="message">
+        <div class="message-header">Request:</div>
+        <div class="message-body">
+            {% if request %}
+                <p>{{request.data}}</p>
+            {% endif %}<br>
         </div>
-        <!-- Global: g -->
-        <div class="message">
-            <div class="message-header">Globals:</div>
-            <div class="message-body">
-                {% if g %}
-                    <p>
-                        {% for val in g %}
-                            {{val}}<br>
-                        {% endfor %}
-                    </p>
-                {% endif %}<br>
-            </div>
+    </div>
+    <!-- Global: g -->
+    <div class="message">
+        <div class="message-header">Globals:</div>
+        <div class="message-body">
+            {% if g %}
+                <p>
+                    {% for val in g %}
+                        {{val}}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}<br>
         </div>
-        <!-- Config -->
-        <div class="message">
-            <div class="message-header">Config:</div>
-            <div class="message-body">
-                {% if config %}
-                    <p>
-                        {% for k,v in config.items() %}
-                            {{k}}: {{v}}<br>
-                        {% endfor %}
-                    </p>
-                {% endif %}<br>
-            </div>
+    </div>
+    <!-- Config -->
+    <div class="message">
+        <div class="message-header">Config:</div>
+        <div class="message-body">
+            {% if config %}
+                <p>
+                    {% for k,v in config.items() %}
+                        {{k}}: {{v}}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}<br>
         </div>
-    </section>
+    </div>
+</section>
 {% endblock body %}
