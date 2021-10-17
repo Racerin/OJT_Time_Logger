@@ -1,5 +1,5 @@
 <section class="section py-0">
-    {% if breadcrumbs|length > 1 %}
+    {% if breadcrumbs|length > 0 %}
     <div class="column">
         <nav class="breadcrumb tag">
             <ul class="container">
