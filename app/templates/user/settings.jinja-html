@@ -1,77 +1,131 @@
 {% extends "layout.jinja-html" %}
+{% import 'my templates.jinja-html' as mt %}
 {% block title %}User Settings{% endblock %}
 <!-- {% block css %}{{super()}}<link rel="stylesheet" href="{{ url_for('static', filename='css/user/settings.css') }}">{% endblock %} -->
 
 {% block body %}
+<!-- Title -->
+{{ mt.titleHeader("Settings") }}
+<!-- Breadcrumb -->
+{% include 'breadcrumb.jinja-html' ignore missing %}
+{#{ mt.breadcrumb() }#}
+
 <section class="section">
-    <div class="message">
-        <div class="message-header">
-            <h2 class="subtitle">Change:</h2>
-        </div>
-        <div class="message-body">
-            <div class="tabs is-boxed">
-                <ul>
-                    <li  class="is-active" data-target="details">
-                        <a><span>Details</span></a>
-                    </li>
-                    <li data-target="username">
-                        <a><span>Username</span></a>
-                    </li>
-                    <li data-target="e-mail">
-                        <a><span>E-mail</span></a>
-                    </li>
-                    <li data-target="password">
-                        <a><span>Password</span></a>
-                    </li>
-                </ul>
-            </div>
-            <!-- <div id="tab-content" style="display: block; height:170px;"> -->
-            <div id="tab-content" class="">
-                <!-- Details -->
-                <div id="details">
-                    <p>Random information to state on settings.</p>
+    <div class="columns is-centered">
+        <div class="column is-5">
+            <div class="message">
+                <div class="message-header">
+                    <h2 class="subtitle">Changes:</h2>
                 </div>
-                <!-- Username -->
-                <div id="username" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
-                        {{ form_username.csrf_token }}
-                        <p class="is-size-5">Change username:</p>
-                        <br>
-                        {{ form_username.new_username }}
-                        <div class="container has-text-center">
-                            <input type="submit" class="button" name="submit_username">
+                <div class="message-body">
+                    <div class="tabs is-boxed">
+                        <ul>
+                            <li  class="is-active" data-target="details">
+                                <a><span>Details</span></a>
+                            </li>
+                            <li data-target="username">
+                                <a><span>Username</span></a>
+                            </li>
+                            <li data-target="e-mail">
+                                <a><span>E-mail</span></a>
+                            </li>
+                            <li data-target="password">
+                                <a><span>Password</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="tab-content" class="">
+                        <!-- Details -->
+                        <div id="details">
+                            <p class="is-underlined">Random information to talk about settings.</p>
+                            <p class="has-text-justified">Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae, reiciendis corrupti libero illum repellat provident nulla adipisci. Ipsa dolor blanditiis placeat officiis, molestias iure et, fugiat dolores accusantium vel eius!</p>
                         </div>
-                    </form>
-                </div>
-                <!-- E-mail -->
-                <div id="e-mail" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
-                        {{ form_email.csrf_token }}
-                        <p class="is-size-5">E-mail:</p>
-                        <br>
-                        <p>Enter original email:</p>
-                        {{ form_email.current_email }}<br>
-                        <p>Enter new e-mail</p>
-                        {{ form_email.new_email }}
-                        <div class="container has-text-center">
-                            <input type="submit" class="button" name="submit_email">
+                        <!-- Username -->
+                        <div id="username" class="is-hidden">
+                            <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
+                                {{ form_username.csrf_token }}
+                                <div class="field">
+                                    {{form_username.new_username.label(class="label")}}
+                                    <div class="control has-icons-left">
+                                        {{form_username.new_username(placeholder="Username", class="input")}}
+                                        <span class="icon is-small is-left">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Add Space -->
+                                <div class="field" style="visibility:hidden">
+                                    <label for="" class="label">Hidden</label>
+                                    <div class="control">
+                                        <input type="text" class="input" placeholder="Hidden">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="submit" class="button" name="submit_username">
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-                <!-- Password -->
-                <div id="password" class="is-hidden">
-                    <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
-                        {{ form_password.csrf_token }}
-                        <p class="is-size-5">To change password:</p>
-                        <br>
-                        <p>Enter password:</p>
-                        {{ form_password.current_password1 }}
-                        <p>Enter password again:</p>
-                        {{ form_password.current_password2 }}
-                        <div class="container has-text-center">
-                            <input type="submit" class="button" name="submit_password">
+                        <!-- E-mail -->
+                        <div id="e-mail" class="is-hidden">
+                            <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
+                                {{ form_email.csrf_token }}
+                                <div class="field">
+                                    {{ form_email.current_email.label(class="label") }}
+                                    <div class="control has-icons-left">
+                                        {{ form_email.current_email(placeholder="Current E-mail", class="input") }}
+                                        <span class="icon is-small is-left">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    {{ form_email.new_email.label(class="label") }}
+                                    <div class="control has-icons-left">
+                                        {{ form_email.new_email(placeholder="New E-mail", class="input") }}
+                                        <div class="icon is-small is-left">
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="submit" class="button" name="submit_email">
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                        <!-- Password -->
+                        <div id="password" class="is-hidden">
+                            <form method="POST" action="{{ url_for('user.settings') }}" autocomplete="off">
+                                {{ form_password.csrf_token }}
+                                <div class="field">
+                                    {{ form_password.new_password1.label(class="label") }}
+                                    <div class="control has-icons-left">
+                                        {{ form_password.new_password1(class="input", placeholder="New Password") }}
+                                        <span class="icon is-small is-left">
+                                            <i class="fa fa-lock"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    {{ form_password.new_password2.label(class="label") }}
+                                    <div class="control has-icons-left">
+                                        {{ form_password.new_password2(class="input", placeholder="New Password") }}
+                                        <span class="icon is-small is-left">
+                                            <i class="fa fa-lock"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="control">
+                                        <input type="submit" class="button" name="submit_password">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
