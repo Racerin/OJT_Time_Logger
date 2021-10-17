@@ -1,0 +1,27 @@
+{% macro titleHeader(ttl, class="section py-0") -%}
+<section class="{{class}}">
+    <p class="title">{{ttl}}</p>
+</section>
+{%- endmacro %}
+
+<!-- THIS NOT WORKING -->
+{% macro breadcrumb() -%}
+{{ self|debug }}
+<section class="section py-0">
+    {% if self.breadcrumbs|length > 0 %}
+    <div class="column">
+        <nav class="breadcrumb tag">
+            <ul class="container">
+                {% for crumb in self.breadcrumbs %}
+                {% if crumb==self.breadcrumbs|last %}
+                {% set li_class="is-active" %}
+                {% else %}{% set li_class="" %}
+                {% endif %}
+                <li class='{{li_class}}'><a href="{{crumb}}">{{crumb.split('/')|last|title}}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</section>
+{%- endmacro %}
