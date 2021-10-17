@@ -55,7 +55,7 @@ def home():
 @bp.route("/clock_out", methods=['POST'])
 @user.flask_login.login_required
 def clock_out():
-    user_id = getattr(model.get_user(), 'user_id', None)
+    user_id = flask_login.current_user.user_id
     db.clock_out(user_id)
     return flask.redirect( flask.url_for("home") )
 
@@ -63,7 +63,7 @@ def clock_out():
 @bp.route("/clock_in", methods=['POST'])
 @user.flask_login.login_required
 def clock_in():
-    user_id = getattr(model.get_user(), 'user_id', None)
+    user_id = flask_login.current_user.user_id
     db.clock_in(user_id)
     return flask.redirect( flask.url_for("home") )
 
