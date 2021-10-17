@@ -16,16 +16,14 @@
                 <div class="message-header">Records</div>
                 <div class="message-body">
                     <p>Put each of the recent user's loggin history here.</p>
-                    {% if clock_data %}
-                    {{ mt.clock_records(clock_data) }}
-                    {% endif %}
+                    {{ mt.clock_records(clock.clock_data) }}
                 </div>
             </div>
             <!-- Clock-in/clock-out -->
             <div class="box">
-                {% if form.is_clocked_in %}
+                {% if clock.is_clocked_in %}
                 {# Render Clocked-out page #}
-                <p>You clocked in at {{form.last_clock_in_nice()}}.</p>
+                <p>You clocked in at {{clock.last_clock_in_nice()}}.</p>
                 <form method="POST" action="{{url_for('clocking.clock_out')}}">
                     <input class="button" type="submit" value="Clock-Out">
                 </form>

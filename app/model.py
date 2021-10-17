@@ -13,6 +13,7 @@ __all__ = ["User"]
 import dataclasses
 import sqlite3
 import functools
+import datetime
 
 import flask
 import flask_login
@@ -257,3 +258,27 @@ class User(flask_login.UserMixin):
             db.execute(sql)
             db.commit()
         
+
+class ClockManager():
+    def __init__(self):
+        # user_id = getattr(model.get_user(), 'user_id', None)
+        user_id = getattr(flask_login.current_user, 'user_id', None)
+        self.is_clocked_in = DB.is_clocked_in(user_id)
+        self.last_clock_in = DB.last_clock_in(user_id)
+        self.clock_data = DB.get_clock_data(user_id)
+
+    @classmethod
+    def datetime_nice(cls, datetime_obj : 'datetime', options=0) -> str:
+        """Return a nice looking string for given datetime."""
+        # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+        if options == 1:
+            return datetime_obj.strftime('%c')
+        else:
+            return datetime_obj.strftime('%A %d %b, %I:%M %p')
+
+    def last_clock_in_nice(self) -> str:
+        """Returns a nice-looking string of the 
+        'last_clock_in' return value.
+        """
+        str1 = self.datetime_nice(self.last_clock_in)
+        return str1

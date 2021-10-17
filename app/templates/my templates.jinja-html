@@ -25,3 +25,9 @@
     {% endif %}
 </section>
 {%- endmacro %}
+
+{% macro clock_records(clock_data) %}
+{% for datum in clock_data %}
+<li>{{datum}}</li>
+{% endfor %}
+{% endmacro %}
