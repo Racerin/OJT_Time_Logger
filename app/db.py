@@ -31,8 +31,8 @@ def salt_password(pw : str, iterations=PARAM.CONSTANTS.SALT_ITERATIONS) -> bytes
         )
 
 
-def clock_in(user_id):
-    """Register an user's clock-in time."""
+def clock_in(user_id : int):
+    """Register a user's clock-in time."""
     sql = "INSERT INTO Clocking (user_id, clock_in) VALUES(?,?);"
     now = datetime.datetime.now().isoformat()
     db = get_db()
@@ -40,7 +40,7 @@ def clock_in(user_id):
     db.commit()
 
 
-def is_clocked_in(user_id) -> bool:
+def is_clocked_in(user_id : int) -> bool:
     """Determine whether user is clocked in."""
     sql = "SELECT clock_out FROM Clocking WHERE user_id = ? ORDER BY clock_in DESC LIMIT 1;"
     db = get_db()
@@ -51,7 +51,7 @@ def is_clocked_in(user_id) -> bool:
     return False
 
 
-def clock_out(user_id):
+def clock_out(user_id : int):
     """Clock-out user given they were clocked in."""
     sql = """UPDATE Clocking 
     SET clock_out = ?
@@ -65,7 +65,7 @@ def clock_out(user_id):
     db.commit()
 
 
-def last_clock_in(user_id) -> datetime.datetime:
+def last_clock_in(user_id : int) -> datetime.datetime:
     """Return the time the user was last clocked in."""
     sql = """SELECT clock_in FROM Clocking 
     WHERE user_id = ? 
