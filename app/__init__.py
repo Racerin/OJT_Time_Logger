@@ -73,6 +73,20 @@ def create_app(test_config=False) -> flask.Flask:
             breadcrumbs.append(breadcrumb)
         return dict(breadcrumbs=breadcrumbs)
 
+    @app.context_processor
+    def utility_functions():
+        """Context_processor to input utilities in jinja template."""
+        def debug(*args):
+            """Print to console from jinja templates."""
+            app.logger.debug("|".join(args))
+            return args
+        return dict(debug=debug, )
+    def debug(arg):
+        """Jinja filter to print input."""
+        app.logger.debug(arg)
+        return arg
+    app.jinja_env.filters['debug'] = debug
+    # Functions vs Filters in Jinja: https://stackoverflow.com/a/22491652/6556801
 
     # Views
     # from . import views
