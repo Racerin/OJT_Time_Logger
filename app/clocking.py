@@ -46,9 +46,12 @@ class EditForm(flask_wtf.FlaskForm):
 @user.flask_login.login_required
 def home():
     clock_form = ClockForm()
+    user_id = flask_login.current_user.user_id
+    clock_data = db.get_clock_data(user_id)
     return flask.render_template(
         PARAM.HTML.CLOCKING, 
         form=clock_form,
+        clock_data=clock_data
         )
 
 

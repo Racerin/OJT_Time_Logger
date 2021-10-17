@@ -16,6 +16,9 @@
                 <div class="message-header">Records</div>
                 <div class="message-body">
                     <p>Put each of the recent user's loggin history here.</p>
+                    {% if clock_data %}
+                    {{ mt.clock_records(clock_data) }}
+                    {% endif %}
                 </div>
             </div>
             <!-- Clock-in/clock-out -->

@@ -72,11 +72,19 @@ def last_clock_in(user_id : int) -> datetime.datetime:
     ORDER BY clock_in DESC LIMIT 1;
     """
     rows = get_db().execute(sql, (user_id,))
-    print('last_clock_in')
     for row in rows:
-        print(row['clock_in'])
         return datetime.datetime.fromisoformat(row['clock_in'])
-    return None
+
+
+def get_clock_data(user_id : int, limit=10) -> dict:
+    """Get clock data of user in container."""
+    sql = """SELECT clock_in, clock_out FROM Clocking
+    WHERE user_id = ?
+    ORDER BY clock_in ASC
+    LIMIT ?"""
+    rows = get_db().execute(sql, (user_id, limit))
+    clock_data = tuple(((r['clock_in'],r['clock_out']) for r in rows))
+    return clock_data
 
 
 def get_db():
