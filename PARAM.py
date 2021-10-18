@@ -1,5 +1,6 @@
 class HTML:
     HOME = "index.jinja-html"
+    HELP = "help.jinja-html"
     EXPERIMENT="experiment.jinja-html"
     CONTENT = "content.jinja-html"
     #user
