@@ -6,9 +6,9 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE Users (
     user_id INTEGER PRIMARY KEY,
-    username TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE NOT NULL CHECK(LENGTH(username)>{} AND LENGTH(username)<{}),
     salt_password BLOB NOT NULL,
-    email TEXT UNIQUE,
+    email TEXT UNIQUE CHECK(LENGTH(email)>{} AND LENGTH(email)<{}),
     is_admin INTEGER DEFAULT 0,
     is_active INTEGER DEFAULT 1
     );
