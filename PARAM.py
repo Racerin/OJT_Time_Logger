@@ -45,3 +45,6 @@ class FORM:
         'unm_no_wht_spc':"Username cannot contain any whitespace.",
         'pw_d_w_s':"Password requires atleast a number, letter and symbol.",
     }
+
+class LIMITS:
+    RECENT_CLOCK_DATA = 10
