@@ -19,6 +19,7 @@ import flask
 import flask_login
 
 from . import db as DB
+import PARAM
 import library
 
 
@@ -260,21 +261,59 @@ class User(flask_login.UserMixin):
         
 
 class ClockManager():
+
     def __init__(self):
-        # user_id = getattr(model.get_user(), 'user_id', None)
-        user_id = getattr(flask_login.current_user, 'user_id', None)
-        self.is_clocked_in = DB.is_clocked_in(user_id)
-        self.last_clock_in = DB.last_clock_in(user_id)
-        self.clock_data = DB.get_clock_data(user_id)
+        self.user_id = getattr(flask_login.current_user, 'user_id', None)
+        self.is_clocked_in = DB.is_clocked_in(self.user_id)
+        self.last_clock_in = DB.last_clock_in(self.user_id)
+        self.clock_data = self.recent_clockings(PARAM.LIMITS.RECENT_CLOCK_DATA)
 
     @classmethod
-    def datetime_nice(cls, datetime_obj : 'datetime', options=0) -> str:
+    def datetime_nice(cls, datetime_obj : datetime.datetime, options=0) -> str:
         """Return a nice looking string for given datetime."""
         # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
         if options == 1:
             return datetime_obj.strftime('%c')
         else:
-            return datetime_obj.strftime('%A %d %b, %I:%M %p')
+            return datetime_obj.strftime(r'%A %d %b, %I:%M %p')
+
+    def recent_clockings(self, limit=10) -> 'list[datetime.datetime]':
+        rows = DB.get_clock_data(self.user_id, limit=limit)
+        final_clock_data = list()
+        for row in rows:
+            old_pair = row[0], row[1]
+            new_pair = list()
+            for clock_time_str in old_pair:
+                # if clock_time_str is not None:
+                if isinstance(clock_time_str, str):
+                    my_date = datetime.datetime.fromisoformat(clock_time_str)
+                    new_pair.append(my_date)
+                else:
+                    new_pair.append(None)
+            final_clock_data.append(new_pair)
+        return final_clock_data
+        
+    def recent_clockings_nice(self, options=2) -> 'list[str]':
+        """Return a nice looking clock data string."""
+        final_clock_datas = list()
+        if options == 1:
+            prefixes = ("Clocked-In: ", "Clocked-Out: ",)
+            for pair in self.clock_data:
+                # Create Clocked-In/Clocked-Out strings for each clock datetime.
+                pair_str = (pref + self.datetime_nice(clk) for pref, clk in zip(prefixes,pair) if isinstance(clk, datetime.datetime))
+                # Append strings singularly to final list.
+                tuple(final_clock_datas.append(clk_str) for clk_str in pair_str)
+        elif options == 2:
+            for pair in self.clock_data:
+                # Create Clocked-In/Clocked-Out strings for each clock datetime.
+                pair_str = tuple(self.datetime_nice(clk) for clk in pair if isinstance(clk, datetime.datetime))
+                print("This is pair_str:", pair_str)
+                # Append pair to final list
+                if len(pair_str) == 2:
+                    final_clock_datas.append(f"Clocked-In: {pair_str[0]} | Clocked-Out: {pair_str[1]}")
+                else:
+                    final_clock_datas.append(f"Clocked-In: {pair_str[0]}")
+        return final_clock_datas
 
     def last_clock_in_nice(self) -> str:
         """Returns a nice-looking string of the 

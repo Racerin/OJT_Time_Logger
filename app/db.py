@@ -83,8 +83,7 @@ def get_clock_data(user_id : int, limit=10) -> dict:
     ORDER BY clock_in ASC
     LIMIT ?"""
     rows = get_db().execute(sql, (user_id, limit))
-    clock_data = tuple(((r['clock_in'],r['clock_out']) for r in rows))
-    return clock_data
+    return rows
 
 
 def get_db():
