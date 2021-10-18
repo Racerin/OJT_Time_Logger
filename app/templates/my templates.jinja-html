@@ -26,8 +26,8 @@
 </section>
 {%- endmacro %}
 
-{% macro clock_records(clock_data) %}
-{% for datum in clock_data %}
-<li>{{datum}}</li>
+{% macro clock_records(clock_data_str) %}
+{% for str1 in clock_data_str %}
+<li>{{str1}}</li>
 {% endfor %}
 {% endmacro %}
