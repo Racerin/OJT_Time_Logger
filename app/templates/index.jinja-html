@@ -1,23 +1,19 @@
 {% extends "layout.jinja-html" %}
+{% import 'my templates.jinja-html' as mt %}
 {% block title %}Home{% endblock %}
 
 {% block body %}
+<!-- Title -->
+{#{ mt.titleHeader("OJT Time Logger") }#}
 <section class="section">
-    <div class="container">
-        <h2 class="title has-text-left">OJT Time Logger</h2>
-        <h2 class="subtitle">Welcome<h2>
-        <div class="column is-full">
-            <p>This is the homepage of my website.</p>
-            <div class="container">
-                <p>The aim of this website is to log an On-the-Job-Trainee's (<b>OJT</b>) log-in and log-out time.</p>
-            </div>
-        </div>
-        <div class="column is-full"></div>
-        <div class="column is-full is-vcentered">
-            <p class="is-italic box has-background-black has-text-light is-vcentered">
-                Contact Darnell Baird at drsbaird@yahoo.com for more information.
-            </p>
-        </div>
+    <h2 class="title has-text-left">OJT Time Logger</h2>
+    <div class="container mx-0">
+        <p>The aim of this website is to log an On-the-Job-Trainee's (<b>OJT</b>) log-in and log-out time.</p>
+    </div>
+</section>
+<section class="section">
+    <div class="box has-background-black has-text-light">
+        Contact Darnell Baird at drsbaird@yahoo.com for more information.
     </div>
 </section>
 {% endblock %}
