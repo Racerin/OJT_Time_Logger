@@ -3,6 +3,7 @@ class HTML:
     EXPERIMENT="experiment.jinja-html"
     CONTENT = "content.jinja-html"
     #user
+    USER = "/user/index.jinja-html"
     REGISTER = "/user/register.jinja-html"
     LOGIN = "user/login.jinja-html"
     SUCCESS = "user/success.jinja-html"

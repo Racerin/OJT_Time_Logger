@@ -1,0 +1,35 @@
+{% extends 'layout.jinja-html' %}
+{% import 'my templates.jinja-html' as mt %}
+
+{% block css -%}
+{{super()}}
+<style>
+    /* Bulletins for dd */
+    dd {display:list-item; list-style-type: disc;}
+</style>
+{%- endblock %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block body %}
+<!-- Breadcrumb -->
+{% include 'breadcrumb.jinja-html' ignore missing %}
+<!-- Title -->
+{{ mt.titleHeader("User Profile") }}
+<!-- Body -->
+<section class="section">
+    <div class="message">
+        <div class="message-header title">{{user.username}}</div>
+        <div class="message-body">
+            <div class="content">
+                <dl>
+                    <dt>User Properties:</dt>
+                    {% for k,v in user.vars_nice().items() %}
+                    <dd>{{"{}: {}".format(k,v)}}</dd>
+                    {% endfor %}
+                </dl>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

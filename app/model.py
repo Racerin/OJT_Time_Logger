@@ -85,6 +85,25 @@ class User(flask_login.UserMixin):
                 return "Unauthorized Access."
         return wrapper
 
+    def vars(self) -> dict:
+        """Returns dict of user's attributes:property"""
+        return vars(self)
+
+    def vars_nice(self) -> dict:
+        """Appropriate nice-looking k:v pairs of vars(self)"""
+        dict1 = self.vars()
+        final_dict = dict()
+        for k,v in dict1.items():
+            # Remove password attributes
+            if 'password' in k.lower(): continue
+            # Remove user_id, is_admin, is_active
+            if k in ('user_id', 'is_admin', 'is_active'): continue
+            # Titleize key
+            kk = k.title()
+            # Add to final_dict
+            final_dict.update({kk:v})
+        return final_dict
+
     def __eq__(self, other):
         """Compare none property attributes."""
         for k,v in vars(self).items():
